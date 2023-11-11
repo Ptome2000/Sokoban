@@ -9,7 +9,7 @@ public class Empilhadora extends GameElement {
 
 	public Empilhadora(Point2D p2, String image) {
 		super(p2);
-		this.imageName = image;
+		setImageName(image);
 	}
 
 	@Override
@@ -17,9 +17,17 @@ public class Empilhadora extends GameElement {
 		return 1;
 	}
 
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
+	}
+
 	@Override
 	public String getName() {
 		return imageName;
+	}
+	
+	private void setFacing() {
+		
 	}
 
 	public void move(Direction d) {

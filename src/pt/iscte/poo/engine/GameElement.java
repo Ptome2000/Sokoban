@@ -23,7 +23,7 @@ abstract class GameElement implements ImageTile{
 	
 	@Override
 	public String getName() {
-		return "Vazio";
+		return "";
 	}
 
 	public void setPosition(Point2D position) {
