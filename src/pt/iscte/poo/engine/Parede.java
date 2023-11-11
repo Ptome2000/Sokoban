@@ -12,5 +12,10 @@ public class Parede extends GameElement {
 	public String getName() {
 		return "Parede";
 	}
+	
+	@Override
+	public int getLayer() {
+		return 3;
+	}
 
 }

@@ -22,10 +22,17 @@ public class GameEngine implements Observer {
 	private Empilhadora bobcat;	
 	private static GameEngine INSTANCE;
 	private List<ImageTile> tileList;
-	//Adicionar array de levels???
+	
+	//		Mensagem da barra		//
+	private String[] statusMessage;
+	private int moves;
+	// ---------------------------	//
+	
+	// 		Gestão de Niveis		//
 	private File[] levels;
 	private int levelPointer;
-
+	// ---------------------------	//
+	
 	private GameEngine() {
 		tileList = new ArrayList<>();   
 	}
@@ -36,7 +43,7 @@ public class GameEngine implements Observer {
 		return INSTANCE;
 	}
 
-	public void startGame() {
+	public void startGame() throws FileNotFoundException {
 
 		gui = ImageMatrixGUI.getInstance();	
 		gui.setSize(GRID_HEIGHT, GRID_WIDTH);
@@ -44,10 +51,10 @@ public class GameEngine implements Observer {
 		gui.go();                              
 
 		loadLevels();
-		generateLevel(levelPointer); //Adiciona os objetos corretamente
-		
-		gui.addImages(tileList); //Problema a gerar?
-		
+		generateLevel(levelPointer);
+
+		gui.addImages(tileList);
+
 	}
 
 	public void loadLevels() {
@@ -56,25 +63,50 @@ public class GameEngine implements Observer {
 		this.levels = dir.listFiles();
 	}
 
-	public void generateLevel(int LevelID) {
-		try {
-			Scanner scan = new Scanner(levels[LevelID]);
-			for (int y = 0; y != GRID_HEIGHT; y++) {
-				String pixelLine = scan.nextLine();
-				for (int x = 0; x != GRID_WIDTH; x++) {
-					GameElement object = generatePixel(pixelLine.charAt(x), new Point2D(x, y));
-					if (object.getLayer() == 1) {
-						tileList.add(new Chao(new Point2D(x, y)));
-						tileList.add(object);
-					} else {
-						tileList.add(object);
-					}
+	public void generateLevel(int LevelID) throws FileNotFoundException {
+		Scanner scan = new Scanner(levels[LevelID]);
+		for (int y = 0; y < GRID_HEIGHT; y++) {
+			String pixelLine = scan.nextLine();
+			for (int x = 0; x < GRID_WIDTH; x++) {
+				GameElement object = generatePixel(pixelLine.charAt(x), new Point2D(x, y));
+				if (object.getLayer() == 1) {
+					tileList.add(new Chao(new Point2D(x,y)));		
+					tileList.add(object);
+				} else {
+					tileList.add(object);
 				}
 			}
-			scan.close();
-		} catch (FileNotFoundException e) {
-			System.err.println("Error Reading Game Level File " + e);
 		}
+		this.moves = 0;
+		createStatusMessage(levels[LevelID], "");			//POR FAZER (NOME)
+		gui.update();
+		scan.close();
+	}
+	
+	private String generateTitle(File name) {
+		String title = name.getName();
+		title = title.replace(".txt", "");
+		return title.replace("level", "Level ");
+	}
+	
+	private void createStatusMessage(File fileName, String nome) {
+		statusMessage = new String[4];
+		statusMessage[0] = generateTitle(fileName);
+		statusMessage[1] = "Player "; 							//POR FAZER
+		statusMessage[2] = "Moves: " + moves;
+		statusMessage[3] = "Energy: " + bobcat.getEnergy(); 
+		generateStatus();
+	}
+	
+	private void updateStatusMessage() {
+		statusMessage[2] = "Moves: " + (moves + 1);
+		statusMessage[3] = "Energy: " + bobcat.getEnergy();
+		generateStatus();
+	}
+	
+	private void generateStatus() {
+		String header = statusMessage[0] + " - " + statusMessage[1] + " - " + statusMessage[2] + " - " + statusMessage[3];
+		gui.setStatusMessage(header);
 	}
 
 
@@ -84,7 +116,7 @@ public class GameEngine implements Observer {
 		case '=': return new Vazio(point);
 		case '#': return new Parede(point);
 		case 'X': return new Alvo(point);
-		case 'E': return new Empilhadora(point, "Empilhadora_U");
+		case 'E': return this.bobcat = new Empilhadora(point, "Empilhadora_U");
 		case 'C': return new Caixote(point);
 
 		default: throw new IllegalArgumentException();
@@ -96,9 +128,17 @@ public class GameEngine implements Observer {
 
 		int key = gui.keyPressed();
 		if (Direction.isDirection(key)) bobcat.move(Direction.directionFor(key));
-
-
+		
+		isGameOver(); //Verificar se perdeu
+		updateStatusMessage();
 		gui.update();
+	}
+	
+	private void isGameOver() {
+		if (bobcat.getEnergy() == 0) {
+			gui.setMessage("Bobcat energy ran out");
+			System.exit(0);
+		}
 	}
 
 }

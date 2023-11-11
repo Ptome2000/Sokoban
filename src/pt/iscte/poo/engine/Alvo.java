@@ -7,5 +7,9 @@ public class Alvo extends Chao {
 	public Alvo(Point2D position) {
 		super(position);
 	}
+	
+	public String getName() {
+		return "Alvo";
+	}
 
 }
