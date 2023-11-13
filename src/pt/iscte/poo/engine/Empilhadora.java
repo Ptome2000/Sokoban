@@ -2,6 +2,7 @@ package pt.iscte.poo.engine;
 
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
+import pt.iscte.poo.utils.Vector2D;
 
 public class Empilhadora extends GameElement implements Movable{
 
@@ -18,11 +19,11 @@ public class Empilhadora extends GameElement implements Movable{
 	public int getLayer() {
 		return 1;
 	}
-	
+
 	public int getEnergy() {
 		return Energy;
 	}
-	
+
 	public void chargeEnergy() {
 		Energy += 50;
 	}
@@ -47,20 +48,29 @@ public class Empilhadora extends GameElement implements Movable{
 		}
 	}
 
-	public void move(Direction d) {
-		Point2D newPosition = getPosition().plus(d.asVector());
-		if (newPosition.getX()>=0 && newPosition.getX()<10 && 
-				newPosition.getY()>=0 && newPosition.getY()<10){
+	public int move(Point2D newPosition, Direction d) {
+		
+		if (inBounds(newPosition)) {
 			setPosition(newPosition);
 			setFacing(d);
 			Energy -= 1;
+			return 1;
 		}
+		return 0;
 	}
 
 	@Override
-	public boolean headbuttingWall() {
+	public boolean emtpyPosition(Vector2D vec) {
 		
-		return true;							//POR FAZER
+		//return vec.equals();
+		return true;
+	}
+
+	@Override
+	public boolean inBounds(Point2D newPosition) {
+		if (newPosition.getX()>=0 && newPosition.getX()<10 &&
+				newPosition.getY()>=0 && newPosition.getY()<10) return true;
+		return false;
 	}
 
 }
