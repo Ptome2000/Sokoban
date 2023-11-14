@@ -153,4 +153,5 @@ public class Point2D implements Serializable { // Added 23-Apr-2018
 	public int distanceTo(Point2D p) {
 		return Math.abs(p.getX() - x) + Math.abs(p.getY() - y);
 	}
+
 }

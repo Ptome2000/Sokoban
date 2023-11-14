@@ -3,8 +3,8 @@
 # C C CC #
 #CC  CCC #
 #CC C C C#
-# C CC C #
+# C BC C #
 # CC  C C#
-#C CC BCC#
-##C C CE##
-=########=
+#C C   CC#
+##C   CE##
+=###  ###=

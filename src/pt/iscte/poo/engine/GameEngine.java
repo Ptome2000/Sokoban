@@ -80,7 +80,7 @@ public class GameEngine implements Observer {
 				}
 			}
 			this.moves = 0;
-			createStatusMessage(levels[LevelID], "");			//POR FAZER (NOME)
+			createStatusMessage(levels[LevelID]);
 			gui.update();
 			scan.close();
 		} catch (FileNotFoundException e) {
@@ -95,7 +95,7 @@ public class GameEngine implements Observer {
 		return title.replace("level", "Level ");
 	}
 
-	private void createStatusMessage(File fileName, String nome) {
+	private void createStatusMessage(File fileName) {
 		statusMessage = new String[4];
 		statusMessage[0] = generateTitle(fileName);
 		statusMessage[1] = "Player " + gui.askUser("Player's Name: ");
@@ -113,7 +113,7 @@ public class GameEngine implements Observer {
 		gui.setStatusMessage(header);
 	}
 
-
+	//Substituir por fábrica
 	private GameElement generatePixel (char sym, Point2D point) {
 		switch(sym) {
 		case ' ': return new Chao(point);
@@ -130,34 +130,78 @@ public class GameEngine implements Observer {
 
 	@Override
 	public void update(Observed source) {
-
 		int key = gui.keyPressed();
 		if (Direction.isDirection(key)) {
-			Direction direction = Direction.directionFor(key);
-			Point2D newPosition = bobcat.getPosition().plus(direction.asVector());
 
-			GameElement gE = getGameElementAtPosition(newPosition, 3);
-			if (gE == null) {
-				gE = getGameElementAtPosition(newPosition, 1);
-				
-				if (gE != null && gE.getName().equals("Bateria")) { bobcat.chargeEnergy(); gui.removeImage(gE); }
+			move(key);
+			isGameOver();
+			updateStatusMessage();
+			gui.update();
+		}
+	}
 
-				moves += bobcat.move(newPosition, direction);
-				isGameOver(); //Verificar se perdeu
-				updateStatusMessage();
-				gui.update();
+	private void move(int key) {
+		Direction direction = Direction.directionFor(key);
+		if (bobcat.inBounds(getPoint(direction, bobcat))) {
+			GameElement[] gE = getGameElementAtPosition(getPoint(direction, bobcat));
+
+			if (gE[1] != null && gE[1].getName().equals("Bateria")) { consumeItem(gE[1]); moveBobcat(direction);}
+			if (gE[2] == null && gE[1] == null && gE[0].getName().equals("Chao")) moveBobcat(direction);
+			if (gE[2] == null && gE[0].getName().equals("Chao") && areMovable(gE[1])) {
+				MovableElement crate = (MovableElement) gE[1];
+				if (moveCrate(getPoint(direction, crate), crate)) moveBobcat(direction);
 			}
 		}
 	}
 
-	private GameElement getGameElementAtPosition(Point2D newPosition, int layer) {
+	private void consumeItem(GameElement element) {
+		if (element instanceof pt.iscte.poo.engine.ConsumableElement) {
+			ConsumableElement object = (ConsumableElement) element;
+			object.consumed(bobcat);
+		}
+
+	}
+
+	//Adicionar método para validar a instanceof do GameElement (Switch?) e chama a função devida dependendo de qual seja
+
+	protected void removeElement(ImageTile element) throws IllegalArgumentException {
+		gui.removeImage(element); tileList.remove(element);
+	}
+
+	private boolean areMovable(GameElement element) {
+		return element instanceof pt.iscte.poo.engine.MovableElement;	
+	}
+
+	private Point2D getPoint(Direction direction, GameElement object) {
+		return object.getPosition().plus(direction.asVector());
+	}
+
+	private void moveBobcat(Direction direction) {
+		bobcat.move(getPoint(direction, bobcat));
+		moves++;
+		bobcat.setFacing(direction);
+	}
+
+	private boolean moveCrate(Point2D newPosition, MovableElement crate) {
+		GameElement[] gE = getGameElementAtPosition(newPosition);
+		if (gE[2] == null && gE[1] == null && gE[0] != null && gE[0].getName().equals("Chao")) {
+			crate.move(newPosition);
+			return true;
+		} else {
+			System.out.println("Cannot move crate to the next position"); //Mensagem debug
+			return false;
+		}
+	}
+
+	private GameElement[] getGameElementAtPosition(Point2D newPosition) {
+		GameElement[] elemList = new GameElement[3]; //Size depending on the max layers
 		for (ImageTile tile : tileList) {
 			GameElement gE = (GameElement) tile;
-			if (gE.getPosition().equals(newPosition) && layer == gE.getLayer()) {
-				return gE;
+			if (gE.getPosition().equals(newPosition)) {
+				elemList[gE.getLayer()] = gE;
 			}
 		}
-		return null;
+		return elemList;
 	}
 
 	private void isGameOver() {

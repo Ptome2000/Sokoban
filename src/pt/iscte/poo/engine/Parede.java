@@ -15,7 +15,7 @@ public class Parede extends GameElement {
 	
 	@Override
 	public int getLayer() {
-		return 3;
+		return 2;
 	}
 
 }

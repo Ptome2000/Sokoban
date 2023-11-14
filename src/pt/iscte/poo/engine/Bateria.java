@@ -2,7 +2,7 @@ package pt.iscte.poo.engine;
 
 import pt.iscte.poo.utils.Point2D;
 
-public class Bateria extends GameElement implements Consumable {
+public class Bateria extends ConsumableElement  {
 
 	public Bateria(Point2D position) {
 		super(position);
@@ -14,13 +14,9 @@ public class Bateria extends GameElement implements Consumable {
 	}
 	
 	@Override
-	public int getLayer() {
-		return 1;
-	}
-
-	@Override
-	public void consumed() {
-		
+	public void consumed(Empilhadora bobcat) {
+		super.consumed(bobcat);
+		bobcat.chargeEnergy();
 	}
 
 }
