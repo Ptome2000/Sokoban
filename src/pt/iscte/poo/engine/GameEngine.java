@@ -24,13 +24,15 @@ public class GameEngine implements Observer {
 	private List<ImageTile> tileList;
 
 	//		Mensagem da barra		//
-	private String[] statusMessage;
-	private int moves;
+	//private String[] statusMessage;
+	//private int moves;
+	private Status statusManager;
 	// ---------------------------	//
 
 	// 		Gestão de Niveis		//
-	private File[] levels;
-	private int levelPointer;
+	//private File[] levels;
+	//private int levelPointer;
+	private Level levelManager;
 	// ---------------------------	//
 
 	private GameEngine() {
@@ -50,23 +52,20 @@ public class GameEngine implements Observer {
 		gui.registerObserver(this);
 		gui.go();                              
 
-		loadLevels();
-		generateLevel(levelPointer);
+		levelManager = new Level(); 
+		statusManager = new Status(levelManager.getLevelPointer());
+		generateLevel();
+		generateStatus();
+		gui.update();
 
 		gui.addImages(tileList);
 
 	}
 
-	public void loadLevels() {
-		String execPath = System.getProperty("user.dir");
-		File dir = new File(execPath + "/levels");
-		this.levels = dir.listFiles();
-	}
-
-	public void generateLevel(int LevelID) {
+	public void generateLevel() {
 		Scanner scan;
 		try {
-			scan = new Scanner(levels[LevelID]);
+			scan = new Scanner(levelManager.getLevels()[levelManager.getLevelPointer()]);
 			for (int y = 0; y < GRID_HEIGHT; y++) {
 				String pixelLine = scan.nextLine();
 				for (int x = 0; x < GRID_WIDTH; x++) {
@@ -79,9 +78,7 @@ public class GameEngine implements Observer {
 					}
 				}
 			}
-			this.moves = 0;
-			createStatusMessage(levels[LevelID]);
-			gui.update();
+
 			scan.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -89,27 +86,10 @@ public class GameEngine implements Observer {
 		}
 	}
 
-	private String generateTitle(File name) {
-		String title = name.getName();
-		title = title.replace(".txt", "");
-		return title.replace("level", "Level ");
-	}
-
-	private void createStatusMessage(File fileName) {
-		statusMessage = new String[4];
-		statusMessage[0] = generateTitle(fileName);
-		statusMessage[1] = "Player " + gui.askUser("Player's Name: ");
-		updateStatusMessage();
-	}
-
-	private void updateStatusMessage() {
-		statusMessage[2] = "Moves: " + moves;
-		statusMessage[3] = "Energy: " + bobcat.getEnergy();
-		generateStatus();
-	}
-
+	// Criar um Objecto to tipo Status com um ToString para atualizar a barra de status
+	// Esta classe pode ser também utilizada para tratar do HighScore (Visto que terá os moves e o nome do jogador)
 	private void generateStatus() {
-		String header = statusMessage[0] + " - " + statusMessage[1] + " - " + statusMessage[2] + " - " + statusMessage[3];
+		String header = statusManager.toString() + "- Energy: " + bobcat.getEnergy();
 		gui.setStatusMessage(header);
 	}
 
@@ -135,7 +115,7 @@ public class GameEngine implements Observer {
 
 			move(key);
 			isGameOver();
-			updateStatusMessage();
+			generateStatus();
 			gui.update();
 		}
 	}
@@ -157,13 +137,14 @@ public class GameEngine implements Observer {
 	private void consumeItem(GameElement element) {
 		if (element instanceof pt.iscte.poo.engine.ConsumableElement) {
 			ConsumableElement object = (ConsumableElement) element;
-			object.consumed(bobcat);
+			object.consumed();
 		}
 
 	}
 
 	//Adicionar método para validar a instanceof do GameElement (Switch?) e chama a função devida dependendo de qual seja
 
+	//Removes the given element from the Image interface and Image List 
 	protected void removeElement(ImageTile element) throws IllegalArgumentException {
 		gui.removeImage(element); tileList.remove(element);
 	}
@@ -172,19 +153,26 @@ public class GameEngine implements Observer {
 		return element instanceof pt.iscte.poo.engine.MovableElement;	
 	}
 
+	//Gets the point 1 pixel in front of the passed object (Intended for MovableElements)
 	private Point2D getPoint(Direction direction, GameElement object) {
 		return object.getPosition().plus(direction.asVector());
 	}
 
 	private void moveBobcat(Direction direction) {
 		bobcat.move(getPoint(direction, bobcat));
-		moves++;
+		statusManager.addMove();
 		bobcat.setFacing(direction);
+	}
+
+	public Empilhadora getBobcat() {
+		return bobcat;
 	}
 
 	private boolean moveCrate(Point2D newPosition, MovableElement crate) {
 		GameElement[] gE = getGameElementAtPosition(newPosition);
-		if (gE[2] == null && gE[1] == null && gE[0] != null && gE[0].getName().equals("Chao")) {
+		//	!!!	Refazer esta linha para verificar se o tile é movable
+		if (!crate.inBounds(newPosition) || gE[0] == null) return false; 
+		if (gE[2] == null && gE[1] == null && gE[0].getName().equals("Chao") || gE[0].getName().equals("Alvo")) {
 			crate.move(newPosition);
 			return true;
 		} else {

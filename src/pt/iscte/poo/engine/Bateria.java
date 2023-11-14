@@ -14,9 +14,9 @@ public class Bateria extends ConsumableElement  {
 	}
 	
 	@Override
-	public void consumed(Empilhadora bobcat) {
-		super.consumed(bobcat);
-		bobcat.chargeEnergy();
+	public void consumed() {
+		super.consumed();
+		GameEngine.getInstance().getBobcat().chargeEnergy();
 	}
 
 }

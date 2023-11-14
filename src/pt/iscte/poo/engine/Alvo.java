@@ -11,5 +11,11 @@ public class Alvo extends Chao {
 	public String getName() {
 		return "Alvo";
 	}
+	
+	public boolean withCrate() {
+		
+		//Forma de validar se está preenchido?
+		return false;
+	}
 
 }

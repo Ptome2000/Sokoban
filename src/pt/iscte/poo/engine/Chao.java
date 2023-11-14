@@ -4,8 +4,8 @@ import pt.iscte.poo.utils.Point2D;
 
 public class Chao extends GameElement {
 
-	public Chao(Point2D p2) {
-		super(p2);
+	public Chao(Point2D position) {
+		super(position);
 	}
 	
 	@Override

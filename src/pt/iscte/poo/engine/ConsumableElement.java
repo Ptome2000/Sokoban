@@ -14,7 +14,7 @@ public class ConsumableElement extends GameElement implements Consumable{
 	}
 
 	@Override
-	public void consumed(Empilhadora bobcat) {
+	public void consumed() {
 		GameEngine.getInstance().removeElement(this);
 	}
 	
