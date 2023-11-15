@@ -1,5 +1,6 @@
-package pt.iscte.poo.engine;
+package pt.iscte.poo.tileObjects;
 
+import pt.iscte.poo.elements.MovableElement;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
@@ -7,10 +8,12 @@ public class Empilhadora extends MovableElement {
 
 	private String imageName;
 	private int Energy;
+	private boolean hasHammer;
 
 	public Empilhadora(Point2D position, String image) {
 		super(position);
 		this.Energy = 100;
+		this.hasHammer = false;
 		setImageName(image);
 	}
 
@@ -21,8 +24,20 @@ public class Empilhadora extends MovableElement {
 	public void chargeEnergy() {
 		Energy += 50;
 	}
+	
+	public void equipHammer() {
+		hasHammer = true;
+	}
+	
+	public void decreaseEnergy() {
+		Energy--;
+	}
+	
+	public boolean hasHammer() {
+		return hasHammer;
+	}
 
-	public void setImageName(String imageName) {
+	private void setImageName(String imageName) {
 		this.imageName = imageName;
 	}
 

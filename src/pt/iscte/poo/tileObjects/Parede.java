@@ -1,5 +1,6 @@
-package pt.iscte.poo.engine;
+package pt.iscte.poo.tileObjects;
 
+import pt.iscte.poo.elements.GameElement;
 import pt.iscte.poo.utils.Point2D;
 
 public class Parede extends GameElement {

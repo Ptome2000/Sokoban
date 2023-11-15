@@ -4,7 +4,7 @@
 #CC  CCC #
 #CC C C C#
 # C BC C #
-# CC  C C#
-#C C   CC#
-##C   CE##
+#     C C#
+#C P   CC#
+##O   CE##
 =###  ###=

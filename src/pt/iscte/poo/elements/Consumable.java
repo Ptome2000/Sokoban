@@ -1,4 +1,4 @@
-package pt.iscte.poo.engine;
+package pt.iscte.poo.elements;
 
 public interface Consumable {
 

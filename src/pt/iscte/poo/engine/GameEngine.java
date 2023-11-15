@@ -1,15 +1,20 @@
 package pt.iscte.poo.engine;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import pt.iscte.poo.elements.ConsumableElement;
+import pt.iscte.poo.elements.GameElement;
+import pt.iscte.poo.elements.MovableElement;
+import pt.iscte.poo.elements.WalkableElement;
 import pt.iscte.poo.gui.ImageMatrixGUI;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
+import pt.iscte.poo.tileObjects.Chao;
+import pt.iscte.poo.tileObjects.Empilhadora;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
@@ -23,17 +28,8 @@ public class GameEngine implements Observer {
 	private static GameEngine INSTANCE;
 	private List<ImageTile> tileList;
 
-	//		Mensagem da barra		//
-	//private String[] statusMessage;
-	//private int moves;
 	private Status statusManager;
-	// ---------------------------	//
-
-	// 		Gestão de Niveis		//
-	//private File[] levels;
-	//private int levelPointer;
 	private Level levelManager;
-	// ---------------------------	//
 
 	private GameEngine() {
 		tileList = new ArrayList<>();   
@@ -69,7 +65,7 @@ public class GameEngine implements Observer {
 			for (int y = 0; y < GRID_HEIGHT; y++) {
 				String pixelLine = scan.nextLine();
 				for (int x = 0; x < GRID_WIDTH; x++) {
-					GameElement object = generatePixel(pixelLine.charAt(x), new Point2D(x, y));
+					GameElement object = GameElement.generatePixel(pixelLine.charAt(x), new Point2D(x, y));
 					if (object.getLayer() == 1) {
 						tileList.add(new Chao(new Point2D(x,y)));		
 						tileList.add(object);
@@ -81,31 +77,14 @@ public class GameEngine implements Observer {
 
 			scan.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	// Criar um Objecto to tipo Status com um ToString para atualizar a barra de status
 	// Esta classe pode ser também utilizada para tratar do HighScore (Visto que terá os moves e o nome do jogador)
 	private void generateStatus() {
-		String header = statusManager.toString() + "- Energy: " + bobcat.getEnergy();
+		String header = statusManager.toString() + " - Energy: " + bobcat.getEnergy();
 		gui.setStatusMessage(header);
-	}
-
-	//Substituir por fábrica
-	private GameElement generatePixel (char sym, Point2D point) {
-		switch(sym) {
-		case ' ': return new Chao(point);
-		case '=': return new Vazio(point);
-		case '#': return new Parede(point);
-		case 'X': return new Alvo(point);
-		case 'E': return this.bobcat = new Empilhadora(point, "Empilhadora_U");
-		case 'C': return new Caixote(point);
-		case 'B': return new Bateria(point);
-
-		default: throw new IllegalArgumentException();
-		}
 	}
 
 	@Override
@@ -125,32 +104,36 @@ public class GameEngine implements Observer {
 		if (bobcat.inBounds(getPoint(direction, bobcat))) {
 			GameElement[] gE = getGameElementAtPosition(getPoint(direction, bobcat));
 
-			if (gE[1] != null && gE[1].getName().equals("Bateria")) { consumeItem(gE[1]); moveBobcat(direction);}
-			if (gE[2] == null && gE[1] == null && gE[0].getName().equals("Chao")) moveBobcat(direction);
-			if (gE[2] == null && gE[0].getName().equals("Chao") && areMovable(gE[1])) {
-				MovableElement crate = (MovableElement) gE[1];
-				if (moveCrate(getPoint(direction, crate), crate)) moveBobcat(direction);
+			//			if (gE[1] != null && gE[1].getName().equals("Bateria")) { consumeItem(gE[1]); moveBobcat(direction);}
+			//			if (gE[2] == null && gE[1] == null && gE[0].getName().equals("Chao")) moveBobcat(direction);
+			//			if (gE[2] == null && gE[0].getName().equals("Chao") && areMovable(gE[1])) {
+			//				MovableElement crate = (MovableElement) gE[1];
+			//				if (moveCrate(getPoint(direction, crate), crate)) moveBobcat(direction);
+			//			}
+			//		}
+
+			if (ElementCategory.CONSUMABLE_SLOT.contains(gE[1])) consumeItem(gE[1], direction);
+
+			if (gE[1] == null && ElementCategory.WALKABLE_SLOT.contains(gE[0])) moveBobcat(direction);
+
+			if (ElementCategory.PUSHABLE_SLOT.contains(gE[1])) {
+				MovableElement object = (MovableElement) gE[1];
+				if (moveCrate(getPoint(direction, object), object)) { moveBobcat(direction); bobcat.decreaseEnergy(); }
 			}
 		}
-	}
-
-	private void consumeItem(GameElement element) {
-		if (element instanceof pt.iscte.poo.engine.ConsumableElement) {
-			ConsumableElement object = (ConsumableElement) element;
-			object.consumed();
-		}
 
 	}
 
-	//Adicionar método para validar a instanceof do GameElement (Switch?) e chama a função devida dependendo de qual seja
+	//Consumes the Object given and may affect the bobcat
+	private void consumeItem(GameElement element, Direction direction) {
+		ConsumableElement object = (ConsumableElement) element;
+		object.consumed();
+		moveBobcat(direction);
+	}
 
 	//Removes the given element from the Image interface and Image List 
-	protected void removeElement(ImageTile element) throws IllegalArgumentException {
+	public void removeElement(ImageTile element) throws IllegalArgumentException {
 		gui.removeImage(element); tileList.remove(element);
-	}
-
-	private boolean areMovable(GameElement element) {
-		return element instanceof pt.iscte.poo.engine.MovableElement;	
 	}
 
 	//Gets the point 1 pixel in front of the passed object (Intended for MovableElements)
@@ -163,6 +146,10 @@ public class GameEngine implements Observer {
 		statusManager.addMove();
 		bobcat.setFacing(direction);
 	}
+	
+	public void setBobcat(Empilhadora bobcat) {
+		this.bobcat = bobcat;
+	}
 
 	public Empilhadora getBobcat() {
 		return bobcat;
@@ -170,9 +157,7 @@ public class GameEngine implements Observer {
 
 	private boolean moveCrate(Point2D newPosition, MovableElement crate) {
 		GameElement[] gE = getGameElementAtPosition(newPosition);
-		//	!!!	Refazer esta linha para verificar se o tile é movable
-		if (!crate.inBounds(newPosition) || gE[0] == null) return false; 
-		if (gE[2] == null && gE[1] == null && gE[0].getName().equals("Chao") || gE[0].getName().equals("Alvo")) {
+		if (crate.inBounds(newPosition) && gE[1] == null && ElementCategory.WALKABLE_SLOT.contains(gE[0])) {
 			crate.move(newPosition);
 			return true;
 		} else {
@@ -197,6 +182,10 @@ public class GameEngine implements Observer {
 			gui.setMessage("Bobcat energy ran out");
 			System.exit(0);
 		}
+	}
+	
+	private void isLevelClear() {
+		
 	}
 
 }

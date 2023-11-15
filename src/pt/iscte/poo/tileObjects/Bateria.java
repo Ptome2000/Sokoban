@@ -1,5 +1,7 @@
-package pt.iscte.poo.engine;
+package pt.iscte.poo.tileObjects;
 
+import pt.iscte.poo.elements.ConsumableElement;
+import pt.iscte.poo.engine.GameEngine;
 import pt.iscte.poo.utils.Point2D;
 
 public class Bateria extends ConsumableElement  {

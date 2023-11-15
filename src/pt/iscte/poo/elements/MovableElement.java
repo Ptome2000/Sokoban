@@ -1,4 +1,4 @@
-package pt.iscte.poo.engine;
+package pt.iscte.poo.elements;
 
 import pt.iscte.poo.utils.Point2D;
 

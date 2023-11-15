@@ -1,7 +1,5 @@
 package pt.iscte.poo.engine;
 
-import java.io.File;
-
 import pt.iscte.poo.gui.ImageMatrixGUI;
 
 public class Status {
@@ -26,7 +24,7 @@ public class Status {
 
 	@Override
 	public String toString() {
-		return "Level: " + level + "- Player: " + name + "- Moves:" + moves;
+		return "Level: " + level + " - Player: " + name + " - Moves: " + moves;
 	}
 	
 	

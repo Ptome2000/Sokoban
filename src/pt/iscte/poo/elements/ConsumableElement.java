@@ -1,5 +1,6 @@
-package pt.iscte.poo.engine;
+package pt.iscte.poo.elements;
 
+import pt.iscte.poo.engine.GameEngine;
 import pt.iscte.poo.utils.Point2D;
 
 public class ConsumableElement extends GameElement implements Consumable{
