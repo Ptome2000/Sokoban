@@ -8,7 +8,6 @@ import java.util.Scanner;
 import pt.iscte.poo.elements.ConsumableElement;
 import pt.iscte.poo.elements.GameElement;
 import pt.iscte.poo.elements.MovableElement;
-import pt.iscte.poo.elements.WalkableElement;
 import pt.iscte.poo.gui.ImageMatrixGUI;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.observer.Observed;
@@ -40,6 +39,10 @@ public class GameEngine implements Observer {
 			return INSTANCE = new GameEngine();
 		return INSTANCE;
 	}
+	
+	public ImageMatrixGUI getGUI() {
+		return gui;
+	}
 
 	public void startGame() {
 
@@ -56,6 +59,14 @@ public class GameEngine implements Observer {
 
 		gui.addImages(tileList);
 
+	}
+	
+	public boolean compObject(Point2D point, GameElement Element1) {
+		GameElement[] Elements = getGameElementAtPosition((point));
+		for (GameElement g : Elements) {
+			if (g != null && g.getClass() == Element1.getClass()) return true;
+		}
+		return false;
 	}
 
 	public void generateLevel() {
@@ -93,6 +104,7 @@ public class GameEngine implements Observer {
 		if (Direction.isDirection(key)) {
 
 			move(key);
+			if (statusManager.isGameWon()) { gui.setMessage("Venceu o jogo!!!"); levelManager.levelCleared(); }
 			isGameOver();
 			generateStatus();
 			gui.update();
@@ -103,14 +115,6 @@ public class GameEngine implements Observer {
 		Direction direction = Direction.directionFor(key);
 		if (bobcat.inBounds(getPoint(direction, bobcat))) {
 			GameElement[] gE = getGameElementAtPosition(getPoint(direction, bobcat));
-
-			//			if (gE[1] != null && gE[1].getName().equals("Bateria")) { consumeItem(gE[1]); moveBobcat(direction);}
-			//			if (gE[2] == null && gE[1] == null && gE[0].getName().equals("Chao")) moveBobcat(direction);
-			//			if (gE[2] == null && gE[0].getName().equals("Chao") && areMovable(gE[1])) {
-			//				MovableElement crate = (MovableElement) gE[1];
-			//				if (moveCrate(getPoint(direction, crate), crate)) moveBobcat(direction);
-			//			}
-			//		}
 
 			if (ElementCategory.CONSUMABLE_SLOT.contains(gE[1])) consumeItem(gE[1], direction);
 
@@ -130,7 +134,7 @@ public class GameEngine implements Observer {
 		object.consumed();
 		moveBobcat(direction);
 	}
-
+	
 	//Removes the given element from the Image interface and Image List 
 	public void removeElement(ImageTile element) throws IllegalArgumentException {
 		gui.removeImage(element); tileList.remove(element);
@@ -153,6 +157,10 @@ public class GameEngine implements Observer {
 
 	public Empilhadora getBobcat() {
 		return bobcat;
+	}
+	
+	public Status getStatus() {
+		return statusManager;
 	}
 
 	private boolean moveCrate(Point2D newPosition, MovableElement crate) {

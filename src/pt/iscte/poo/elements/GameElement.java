@@ -23,10 +23,12 @@ public abstract class GameElement implements ImageTile{
 
 	public static GameElement generatePixel (char sym, Point2D point) {
 		switch(sym) {
+		
+		//Adicionar nome na creação
 		case ' ': return new Chao(point);
 		case '=': return new Vazio(point);
 		case '#': return new Parede(point);
-		case 'X': return new Alvo(point);
+		case 'X': Alvo a = new Alvo(point); GameEngine.getInstance().getStatus().addTarget(a); return a;
 		case 'E': Empilhadora bobcat = new Empilhadora(point, "Empilhadora_U"); GameEngine.getInstance().setBobcat(bobcat); return bobcat;
 		case 'C': return new Caixote(point);
 		case 'B': return new Bateria(point);

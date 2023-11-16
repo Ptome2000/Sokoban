@@ -1,15 +1,13 @@
 package pt.iscte.poo.tileObjects;
 
 import pt.iscte.poo.elements.WalkableElement;
+import pt.iscte.poo.engine.GameEngine;
 import pt.iscte.poo.utils.Point2D;
 
 public class Alvo extends WalkableElement {
-	
-	private boolean filled;
 
 	public Alvo(Point2D position) {
 		super(position);
-		this.filled = false;
 	}
 	
 	@Override
@@ -17,14 +15,8 @@ public class Alvo extends WalkableElement {
 		return "Alvo";
 	}
 	
-	public boolean withCrate() {
-		return filled;
-	}
-	
 	public boolean verifyTarget() {
-		
-		//Verificar se existe caixa por cima
-		return false;
+		return GameEngine.getInstance().compObject(this.getPosition(), new Caixote(new Point2D(0,0))); 
 	}
 
 }
