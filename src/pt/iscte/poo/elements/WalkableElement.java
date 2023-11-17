@@ -4,8 +4,8 @@ import pt.iscte.poo.utils.Point2D;
 
 public class WalkableElement extends GameElement implements Walkable {
 
-	public WalkableElement(Point2D position) {
-		super(position);
+	public WalkableElement(Point2D position, String name) {
+		super(position, name);
 	}
 	
 	@Override

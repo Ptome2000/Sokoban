@@ -7,14 +7,9 @@ public class Buraco extends WalkableElement {
 
 	private boolean walkable;
 	
-	public Buraco(Point2D position) {
-		super(position);
+	public Buraco(Point2D position, String name) {
+		super(position, name);
 		this.walkable = false;
-	}
-	
-	@Override
-	public String getName() {
-		return "Buraco";
 	}
 	
 	@Override

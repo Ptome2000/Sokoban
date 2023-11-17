@@ -5,13 +5,8 @@ import pt.iscte.poo.utils.Point2D;
 
 public class Chao extends WalkableElement {
 
-	public Chao(Point2D position) {
-		super(position);
-	}
-	
-	@Override
-	public String getName() {
-		return "Chao";
+	public Chao(Point2D position, String name) {
+		super(position, name);
 	}
 
 }

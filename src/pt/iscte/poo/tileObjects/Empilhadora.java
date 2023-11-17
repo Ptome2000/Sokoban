@@ -5,16 +5,14 @@ import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
 public class Empilhadora extends MovableElement {
-
-	private String imageName;
+	
 	private int Energy;
 	private boolean hasHammer;
 
 	public Empilhadora(Point2D position, String image) {
-		super(position);
+		super(position, image);
 		this.Energy = 100;
 		this.hasHammer = false;
-		setImageName(image);
 	}
 
 	public int getEnergy() {
@@ -38,12 +36,7 @@ public class Empilhadora extends MovableElement {
 	}
 
 	private void setImageName(String imageName) {
-		this.imageName = imageName;
-	}
-
-	@Override
-	public String getName() {
-		return imageName;
+		super.setName(imageName);
 	}
 
 	public void setFacing(Direction d) {

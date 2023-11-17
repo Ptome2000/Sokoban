@@ -5,13 +5,8 @@ import pt.iscte.poo.utils.Point2D;
 
 public class Caixote extends MovableElement {
 
-	public Caixote(Point2D position) {
-		super(position);
-	}
-
-	@Override
-	public String getName() {
-		return "Caixote";
+	public Caixote(Point2D position, String name) {
+		super(position, name);
 	}
 
 }

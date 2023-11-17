@@ -14,6 +14,8 @@ public class Level {
 		this.levelPointer = 0;
 	}
 
+	
+	//Ordenação na pasta importa?
 	private void loadLevels() {
 		String execPath = System.getProperty("user.dir");
 		File dir = new File(execPath + "/levels");

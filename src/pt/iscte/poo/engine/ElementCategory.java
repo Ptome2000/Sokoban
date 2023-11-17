@@ -8,9 +8,9 @@ import pt.iscte.poo.utils.Point2D;
 
 public enum ElementCategory {
 
-	WALKABLE_SLOT(new WalkableElement(new Point2D(0, 0)), null, null),
-	CONSUMABLE_SLOT(new WalkableElement(new Point2D(0, 0)), new ConsumableElement(new Point2D(0,0)), null),
-	PUSHABLE_SLOT(new WalkableElement(new Point2D(0, 0)), new MovableElement(new Point2D(0,0)), null);
+	WALKABLE_SLOT(new WalkableElement(new Point2D(0, 0), ""), null, null),
+	CONSUMABLE_SLOT(new WalkableElement(new Point2D(0, 0), ""), new ConsumableElement(new Point2D(0,0), ""), null),
+	PUSHABLE_SLOT(new WalkableElement(new Point2D(0, 0), ""), new MovableElement(new Point2D(0,0), ""), null);
 
 	private GameElement[] elements;
 

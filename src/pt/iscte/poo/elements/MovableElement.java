@@ -4,8 +4,8 @@ import pt.iscte.poo.utils.Point2D;
 
 public class MovableElement extends GameElement implements Movable{
 
-	public MovableElement(Point2D position) {
-		super(position);
+	public MovableElement(Point2D position, String name) {
+		super(position, name);
 	}
 
 	@Override

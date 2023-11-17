@@ -5,8 +5,8 @@ import pt.iscte.poo.utils.Point2D;
 
 public class ConsumableElement extends GameElement implements Consumable{
 
-	public ConsumableElement(Point2D position) {
-		super(position);
+	public ConsumableElement(Point2D position, String name) {
+		super(position, name);
 	}
 	
 	@Override

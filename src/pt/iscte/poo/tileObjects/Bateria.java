@@ -6,13 +6,8 @@ import pt.iscte.poo.utils.Point2D;
 
 public class Bateria extends ConsumableElement  {
 
-	public Bateria(Point2D position) {
-		super(position);
-	}
-	
-	@Override
-	public String getName() {
-		return "Bateria";
+	public Bateria(Point2D position, String name) {
+		super(position, name);
 	}
 	
 	@Override

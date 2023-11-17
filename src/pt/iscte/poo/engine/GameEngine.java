@@ -78,7 +78,7 @@ public class GameEngine implements Observer {
 				for (int x = 0; x < GRID_WIDTH; x++) {
 					GameElement object = GameElement.generatePixel(pixelLine.charAt(x), new Point2D(x, y));
 					if (object.getLayer() == 1) {
-						tileList.add(new Chao(new Point2D(x,y)));		
+						tileList.add(new Chao(new Point2D(x,y), "Chao"));		
 						tileList.add(object);
 					} else {
 						tileList.add(object);
