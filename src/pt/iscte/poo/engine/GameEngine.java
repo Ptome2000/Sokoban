@@ -1,9 +1,7 @@
 package pt.iscte.poo.engine;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import pt.iscte.poo.elements.ConsumableElement;
 import pt.iscte.poo.elements.GameElement;
@@ -12,7 +10,6 @@ import pt.iscte.poo.gui.ImageMatrixGUI;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
-import pt.iscte.poo.tileObjects.Chao;
 import pt.iscte.poo.tileObjects.Empilhadora;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
@@ -26,9 +23,11 @@ public class GameEngine implements Observer {
 	private Empilhadora bobcat;	
 	private static GameEngine INSTANCE;
 	private List<ImageTile> tileList;
+	private String playerName;
 
 	private Status statusManager;
 	private Level levelManager;
+	private HighScores scores;
 
 	private GameEngine() {
 		tileList = new ArrayList<>();   
@@ -43,21 +42,35 @@ public class GameEngine implements Observer {
 	public ImageMatrixGUI getGUI() {
 		return gui;
 	}
+	
+	public Level getLevel() {
+		return levelManager;
+	}
+	
+	public HighScores getScores() {
+		return scores;
+	}
+	
+	public List<ImageTile> getImages() {
+		return tileList;
+	}
 
 	public void startGame() {
 
 		gui = ImageMatrixGUI.getInstance();	
 		gui.setSize(GRID_HEIGHT, GRID_WIDTH);
 		gui.registerObserver(this);
-		gui.go();                              
-
-		levelManager = new Level(); 
-		statusManager = new Status(levelManager.getLevelPointer());
-		generateLevel();
+		gui.go();      
+		
+		playerName = gui.askUser("Player's Name: ");
+		scores = new HighScores(playerName);
+		
+		levelManager = new Level();
 		generateStatus();
-		gui.update();
-
-		gui.addImages(tileList);
+		levelManager.generateLevel();
+		updateStatus();
+		
+		generateImages();
 
 	}
 	
@@ -69,33 +82,24 @@ public class GameEngine implements Observer {
 		return false;
 	}
 
-	public void generateLevel() {
-		Scanner scan;
-		try {
-			scan = new Scanner(levelManager.getLevels()[levelManager.getLevelPointer()]);
-			for (int y = 0; y < GRID_HEIGHT; y++) {
-				String pixelLine = scan.nextLine();
-				for (int x = 0; x < GRID_WIDTH; x++) {
-					GameElement object = GameElement.generatePixel(pixelLine.charAt(x), new Point2D(x, y));
-					if (object.getLayer() == 1) {
-						tileList.add(new Chao(new Point2D(x,y), "Chao"));		
-						tileList.add(object);
-					} else {
-						tileList.add(object);
-					}
-				}
-			}
-
-			scan.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
-
 	// Esta classe pode ser também utilizada para tratar do HighScore (Visto que terá os moves e o nome do jogador)
-	private void generateStatus() {
+	public void updateStatus() {
 		String header = statusManager.toString() + " - Energy: " + bobcat.getEnergy();
 		gui.setStatusMessage(header);
+	}
+	
+	public void generateStatus() {
+		statusManager = new Status(levelManager.getLevelPointer());
+	}
+	
+	public void generateImages() {
+		gui.addImages(tileList);
+		gui.update();
+	}
+	
+	public void clearLevel() {
+		gui.clearImages();
+		tileList.clear();
 	}
 
 	@Override
@@ -104,13 +108,13 @@ public class GameEngine implements Observer {
 		if (Direction.isDirection(key)) {
 
 			move(key);
-			if (statusManager.isGameWon()) { gui.setMessage("Venceu o jogo!!!"); levelManager.levelCleared(); }
-			isGameOver();
-			generateStatus();
+			updateStatus();
 			gui.update();
+			statusManager.verifyGame();
 		}
 	}
 
+	//Implementar esta validação na classe Empilhadora
 	private void move(int key) {
 		Direction direction = Direction.directionFor(key);
 		if (bobcat.inBounds(getPoint(direction, bobcat))) {
@@ -183,17 +187,6 @@ public class GameEngine implements Observer {
 			}
 		}
 		return elemList;
-	}
-
-	private void isGameOver() {
-		if (bobcat.getEnergy() == 0) {
-			gui.setMessage("Bobcat energy ran out");
-			System.exit(0);
-		}
-	}
-	
-	private void isLevelClear() {
-		
 	}
 
 }

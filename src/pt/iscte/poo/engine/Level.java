@@ -1,20 +1,26 @@
 package pt.iscte.poo.engine;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.Scanner;
 
-import pt.iscte.poo.gui.ImageMatrixGUI;
+import pt.iscte.poo.elements.GameElement;
+import pt.iscte.poo.gui.ImageTile;
+import pt.iscte.poo.tileObjects.Chao;
+import pt.iscte.poo.utils.Point2D;
 
 public class Level {
 
 	private File[] levels;
 	private int levelPointer;
+	private GameEngine game = GameEngine.getInstance();
 
 	public Level() {
 		loadLevels();
 		this.levelPointer = 0;
 	}
 
-	
 	//Ordenação na pasta importa?
 	private void loadLevels() {
 		String execPath = System.getProperty("user.dir");
@@ -32,8 +38,39 @@ public class Level {
 
 	public void levelCleared() {
 		this.levelPointer++;
-		ImageMatrixGUI.getInstance().setMessage("Level " + levelPointer + " cleared");
-		GameEngine.getInstance().generateLevel();
+		game.getGUI().setMessage("Level " + levelPointer + " cleared");
+		constructLevel();
+	}
+	
+	public void constructLevel() {
+		game.clearLevel();
+		game.generateStatus();
+		generateLevel();
+		game.generateImages();
+		game.updateStatus();
+	}
+	
+	public void generateLevel() {
+		Scanner scan;
+		try {
+			scan = new Scanner(levels[levelPointer]);
+			List<ImageTile> tileList = game.getImages();
+			for (int y = 0; y < GameEngine.GRID_HEIGHT; y++) {
+				String pixelLine = scan.nextLine();
+				for (int x = 0; x < GameEngine.GRID_WIDTH; x++) {
+					GameElement object = GameElement.generatePixel(pixelLine.charAt(x), new Point2D(x, y));
+					if (object.getLayer() == 1) {
+						tileList.add(new Chao(new Point2D(x,y), "Chao"));		
+						tileList.add(object);
+					} else {
+						tileList.add(object);
+					}
+				}
+			}
+			scan.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
