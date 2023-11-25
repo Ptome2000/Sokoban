@@ -38,19 +38,19 @@ public class GameEngine implements Observer {
 			return INSTANCE = new GameEngine();
 		return INSTANCE;
 	}
-	
+
 	public ImageMatrixGUI getGUI() {
 		return gui;
 	}
-	
+
 	public Level getLevel() {
 		return levelManager;
 	}
-	
+
 	public HighScores getScores() {
 		return scores;
 	}
-	
+
 	public List<ImageTile> getImages() {
 		return tileList;
 	}
@@ -61,19 +61,18 @@ public class GameEngine implements Observer {
 		gui.setSize(GRID_HEIGHT, GRID_WIDTH);
 		gui.registerObserver(this);
 		gui.go();      
-		
+
 		playerName = gui.askUser("Player's Name: ");
-		scores = new HighScores(playerName);
-		
 		levelManager = new Level();
+		scores = new HighScores(playerName);
+
 		generateStatus();
 		levelManager.generateLevel();
 		updateStatus();
-		
 		generateImages();
 
 	}
-	
+
 	public boolean compObject(Point2D point, GameElement Element1) {
 		GameElement[] Elements = getGameElementAtPosition((point));
 		for (GameElement g : Elements) {
@@ -87,16 +86,16 @@ public class GameEngine implements Observer {
 		String header = statusManager.toString() + " - Energy: " + bobcat.getEnergy();
 		gui.setStatusMessage(header);
 	}
-	
+
 	public void generateStatus() {
 		statusManager = new Status(levelManager.getLevelPointer());
 	}
-	
+
 	public void generateImages() {
 		gui.addImages(tileList);
 		gui.update();
 	}
-	
+
 	public void clearLevel() {
 		gui.clearImages();
 		tileList.clear();
@@ -138,14 +137,14 @@ public class GameEngine implements Observer {
 		object.consumed();
 		moveBobcat(direction);
 	}
-	
+
 	//Removes the given element from the Image interface and Image List 
 	public void removeElement(ImageTile element) throws IllegalArgumentException {
 		gui.removeImage(element); tileList.remove(element);
 	}
 
 	//Gets the point 1 pixel in front of the passed object (Intended for MovableElements)
-	private Point2D getPoint(Direction direction, GameElement object) {
+	public Point2D getPoint(Direction direction, GameElement object) {
 		return object.getPosition().plus(direction.asVector());
 	}
 
@@ -154,7 +153,7 @@ public class GameEngine implements Observer {
 		statusManager.addMove();
 		bobcat.setFacing(direction);
 	}
-	
+
 	public void setBobcat(Empilhadora bobcat) {
 		this.bobcat = bobcat;
 	}
@@ -162,18 +161,19 @@ public class GameEngine implements Observer {
 	public Empilhadora getBobcat() {
 		return bobcat;
 	}
-	
+
 	public Status getStatus() {
 		return statusManager;
 	}
 
+	
+	//Mudar função para Movable object
 	private boolean moveCrate(Point2D newPosition, MovableElement crate) {
 		GameElement[] gE = getGameElementAtPosition(newPosition);
 		if (crate.inBounds(newPosition) && gE[1] == null && ElementCategory.WALKABLE_SLOT.contains(gE[0])) {
 			crate.move(newPosition);
 			return true;
 		} else {
-			System.out.println("Cannot move crate to the next position"); //Mensagem debug
 			return false;
 		}
 	}

@@ -10,11 +10,12 @@ import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.tileObjects.Chao;
 import pt.iscte.poo.utils.Point2D;
 
-public class Level {
+public class Level extends FileManager{
 
 	private File[] levels;
 	private int levelPointer;
 	private GameEngine game = GameEngine.getInstance();
+	private final String folder = super.getPath() + "/levels";
 
 	public Level() {
 		loadLevels();
@@ -23,8 +24,8 @@ public class Level {
 
 	//Ordenação na pasta importa?
 	private void loadLevels() {
-		String execPath = System.getProperty("user.dir");
-		File dir = new File(execPath + "/levels");
+		if (!super.checkFolder(folder)) throw new IllegalStateException();
+		File dir = new File(folder);
 		this.levels = dir.listFiles();
 	}
 
@@ -41,7 +42,7 @@ public class Level {
 		game.getGUI().setMessage("Level " + levelPointer + " cleared");
 		constructLevel();
 	}
-	
+
 	public void constructLevel() {
 		game.clearLevel();
 		game.generateStatus();
@@ -49,7 +50,7 @@ public class Level {
 		game.generateImages();
 		game.updateStatus();
 	}
-	
+
 	public void generateLevel() {
 		Scanner scan;
 		try {
