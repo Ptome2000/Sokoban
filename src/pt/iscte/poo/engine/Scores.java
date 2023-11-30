@@ -1,39 +1,66 @@
 package pt.iscte.poo.engine;
 
-import java.util.Map;
-import java.util.TreeMap;
+import javax.imageio.metadata.IIOInvalidTreeException;
+import java.io.File;
+import java.util.*;
 
 public class Scores {
-	
-	Map<String, Integer> level;
 
-	public Scores() {
-		this.level = new TreeMap<>();
-	}
-	
-	public void add(String name, int value) {
-		level.put(name, value);
-	}
-	
+	private Map<String, Integer> topScores = new HashMap<>();
+	private List<String> namesByscore;
+	Iterator<Integer> iterator = topScores.values().iterator();
+	private Integer score = 0;
+	private HighScores highScores;
 
-	//Funções da aula (útil para futuro)
-	public String topWord(int minWordLength) {
-		
-		//Criar mapa
-		int max = 0;
-		String strMax = "";
-	
-		for (String str : level.keySet()) {
-			if (level.get(str) > max) {
-				max = level.get(str);
-				strMax = str;
+
+	public void generateHighScores(String filename, File[] levels){
+		highScores = new HighScores(filename, levels);
+	}
+
+	public HighScores getHighScores(){
+		return highScores;
+	}
+
+	public Scores(String filename, File[] levels){
+		generateHighScores(filename, levels);
+		topScores = highScores.getTopScores(filename);
+		namesByscore = new ArrayList<>(topScores.keySet());
+	}
+
+	public void setScore(String name, Integer score){
+		this.score = score;
+		//validar
+		addScoreToTop(name);
+	}
+
+	public void setScoreZero(){
+		this.score = 0;
+	}
+	public Integer getScore(){
+		return score;
+	}
+
+	public Map<String, Integer> getTopScores(){
+		removeOneValueInferior();
+		return topScores;
+	}
+
+
+	public void addScoreToTop(String name){
+		topScores.put(name,score);
+	}
+	private void removeOneValueInferior() {
+		while (iterator.hasNext()) {
+			if (iterator.next() < score) {
+				iterator.remove();
+				return;
 			}
+		}
 	}
-		return strMax + ": " + max;
+
+	public List<String> getSortedNamesSortedByScores() {
+
+		Collections.sort(namesByscore);
+		return namesByscore;
 	}
-		
-	
-	
-	
-	
 }

@@ -1,5 +1,6 @@
 package pt.iscte.poo.engine;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,12 +26,14 @@ public class GameEngine implements Observer {
 	private List<ImageTile> tileList;
 	private String playerName;
 
+
 	private Status statusManager;
 	private Level levelManager;
-	private HighScores scores;
+
 
 	private GameEngine() {
-		tileList = new ArrayList<>();   
+		tileList = new ArrayList<>();
+
 	}
 
 	public static GameEngine getInstance() {
@@ -39,6 +42,9 @@ public class GameEngine implements Observer {
 		return INSTANCE;
 	}
 
+	public String getPlayerName() {
+		return playerName;
+	}
 	public ImageMatrixGUI getGUI() {
 		return gui;
 	}
@@ -47,9 +53,6 @@ public class GameEngine implements Observer {
 		return levelManager;
 	}
 
-	public HighScores getScores() {
-		return scores;
-	}
 
 	public List<ImageTile> getImages() {
 		return tileList;
@@ -60,18 +63,22 @@ public class GameEngine implements Observer {
 		gui = ImageMatrixGUI.getInstance();	
 		gui.setSize(GRID_HEIGHT, GRID_WIDTH);
 		gui.registerObserver(this);
-		gui.go();      
-
-		playerName = gui.askUser("Player's Name: ");
-		levelManager = new Level();
-		scores = new HighScores(playerName);
-
+		gui.go();
 		generateStatus();
-		levelManager.generateLevel();
+		levelManager = new Level();
+		levelManager.generateLevel(this);
+		playerName = gui.askUser("Player's Name: ");
+		statusManager.setGetPlayerName(playerName);
 		updateStatus();
 		generateImages();
 
+		statusManager.getScores(levelManager.getLevels()).generateHighScores(statusManager.getLevellFilename(), levelManager.getLevels());
+
+
 	}
+
+
+
 
 	public boolean compObject(Point2D point, GameElement Element1) {
 		GameElement[] Elements = getGameElementAtPosition((point));
@@ -88,7 +95,7 @@ public class GameEngine implements Observer {
 	}
 
 	public void generateStatus() {
-		statusManager = new Status(levelManager.getLevelPointer());
+		statusManager = new Status();
 	}
 
 	public void generateImages() {
@@ -109,7 +116,8 @@ public class GameEngine implements Observer {
 			move(key);
 			updateStatus();
 			gui.update();
-			statusManager.verifyGame();
+			statusManager.verifyGame(this, this.getBobcat(), this.getGUI(), this.levelManager, this.levelManager.getLevels());
+
 		}
 	}
 

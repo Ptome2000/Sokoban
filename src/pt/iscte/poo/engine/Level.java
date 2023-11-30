@@ -14,8 +14,14 @@ public class Level extends FileManager{
 
 	private File[] levels;
 	private int levelPointer;
-	private GameEngine game = GameEngine.getInstance();
 	private final String folder = super.getPath() + "/levels";
+
+
+	private Scores scores;
+
+
+
+
 
 	public Level() {
 		loadLevels();
@@ -37,21 +43,22 @@ public class Level extends FileManager{
 		return levelPointer;
 	}
 
-	public void levelCleared() {
-		this.levelPointer++;
+	public void levelCleared(GameEngine game) {
 		game.getGUI().setMessage("Level " + levelPointer + " cleared");
-		constructLevel();
+
+		this.levelPointer++;
+		constructLevel(game);
 	}
 
-	public void constructLevel() {
+	public void constructLevel(GameEngine game) {
 		game.clearLevel();
 		game.generateStatus();
-		generateLevel();
+		this.generateLevel(game);
 		game.generateImages();
 		game.updateStatus();
 	}
 
-	public void generateLevel() {
+	public void generateLevel(GameEngine game) {
 		Scanner scan;
 		try {
 			scan = new Scanner(levels[levelPointer]);
