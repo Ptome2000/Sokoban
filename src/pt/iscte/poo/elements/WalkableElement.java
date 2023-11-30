@@ -1,5 +1,6 @@
 package pt.iscte.poo.elements;
 
+import pt.iscte.poo.engine.GameEngine;
 import pt.iscte.poo.utils.Point2D;
 
 public class WalkableElement extends GameElement implements Walkable {
@@ -12,10 +13,13 @@ public class WalkableElement extends GameElement implements Walkable {
 	public int getLayer() {
 		return 0;
 	}
-
-	@Override
+	
 	public boolean isWalkable() {
 		return true;
+	}
+	
+	public boolean verifyTarget(GameElement Element) {
+		return GameEngine.getInstance().compObject(this.getPosition(), Element); 
 	}
 
 }

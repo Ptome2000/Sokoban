@@ -138,8 +138,7 @@ public class GameEngine implements Observer {
 	//Consumes the Object given and may affect the bobcat
 	private void consumeItem(GameElement element, Direction direction) {
 		ConsumableElement object = (ConsumableElement) element;
-		object.consumed();
-		moveBobcat(direction);
+		if (object.isConsumable()) { object.consumed(); moveBobcat(direction); }
 	}
 
 	//Removes the given element from the Image interface and Image List 
@@ -178,7 +177,7 @@ public class GameEngine implements Observer {
 	}
 
 	private GameElement[] getGameElementAtPosition(Point2D newPosition) {
-		GameElement[] elemList = new GameElement[3]; //Size depending on the max layers
+		GameElement[] elemList = new GameElement[2]; //Size depending on the max layers
 		for (ImageTile tile : tileList) {
 			GameElement gE = (GameElement) tile;
 			if (gE.getPosition().equals(newPosition)) {

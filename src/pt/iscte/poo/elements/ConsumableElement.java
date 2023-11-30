@@ -9,6 +9,10 @@ public class ConsumableElement extends GameElement implements Consumable{
 		super(position, name);
 	}
 	
+	public boolean isConsumable() {
+		return true;
+	}
+	
 	@Override
 	public int getLayer() {
 		return 1;

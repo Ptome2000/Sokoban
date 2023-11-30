@@ -5,6 +5,6 @@
 #CC C C C#
 # C BC C #
 #     C C#
-#C P   CC#
-##O   CE##
+#C P   MC#
+##%   CE##
 =###  ###=

@@ -8,20 +8,20 @@ import pt.iscte.poo.utils.Point2D;
 
 public enum ElementCategory {
 
-	WALKABLE_SLOT(new WalkableElement(new Point2D(0, 0), ""), null, null),
-	CONSUMABLE_SLOT(new WalkableElement(new Point2D(0, 0), ""), new ConsumableElement(new Point2D(0,0), ""), null),
-	PUSHABLE_SLOT(new WalkableElement(new Point2D(0, 0), ""), new MovableElement(new Point2D(0,0), ""), null);
+	WALKABLE_SLOT(new WalkableElement(new Point2D(0, 0), ""), null),
+	CONSUMABLE_SLOT(new WalkableElement(new Point2D(0, 0), ""), new ConsumableElement(new Point2D(0,0), "")),
+	PUSHABLE_SLOT(new WalkableElement(new Point2D(0, 0), ""), new MovableElement(new Point2D(0,0), ""));
 
 	private GameElement[] elements;
 
-	private ElementCategory(GameElement gameElement0, GameElement gameElement1, GameElement gameElement2) {
-		this.elements = new GameElement[]{gameElement0, gameElement1, gameElement2};
+	private ElementCategory(GameElement gameElement0, GameElement gameElement1) {
+		this.elements = new GameElement[]{gameElement0, gameElement1};
 	}
 
 	public GameElement[] getElements() {
 		return elements;
 	}
-
+	
 	public boolean contains(GameElement element) {
 		for (GameElement categoryElement : elements) {
 			if (categoryElement != null && categoryElement.getClass().isInstance(element)) {

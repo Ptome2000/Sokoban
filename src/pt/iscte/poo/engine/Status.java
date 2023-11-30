@@ -2,7 +2,8 @@ package pt.iscte.poo.engine;
 
 import java.util.ArrayList;
 import java.util.List;
-import pt.iscte.poo.tileObjects.Alvo;
+import pt.iscte.poo.tileObjects.*;
+import pt.iscte.poo.utils.Point2D;
 
 public class Status {
 
@@ -11,6 +12,7 @@ public class Status {
 	private GameEngine game = GameEngine.getInstance();
 
 	private List<Alvo> targets;
+	private List<Teleporte> teleports;
 
 	public Status(int level) {
 		this.moves = 0;
@@ -39,17 +41,16 @@ public class Status {
 
 	private boolean isGameWon() {
 		for (Alvo a :  targets) {
-			if (!a.verifyTarget()) return false;
+			if (!a.verifyTarget(new Caixote(new Point2D(0,0), "Caixote"))) return false;
 		}
 		return true;
 	}
-
+	
 	public void verifyGame() {
 		isGameOver();
 		if (isGameWon()) {
 			game.getLevel().levelCleared();
 		}
-
 	}
 
 	@Override

@@ -2,15 +2,7 @@ package pt.iscte.poo.elements;
 
 import pt.iscte.poo.engine.GameEngine;
 import pt.iscte.poo.gui.ImageTile;
-import pt.iscte.poo.tileObjects.Alvo;
-import pt.iscte.poo.tileObjects.Bateria;
-import pt.iscte.poo.tileObjects.Buraco;
-import pt.iscte.poo.tileObjects.Caixote;
-import pt.iscte.poo.tileObjects.Chao;
-import pt.iscte.poo.tileObjects.Empilhadora;
-import pt.iscte.poo.tileObjects.Palete;
-import pt.iscte.poo.tileObjects.Parede;
-import pt.iscte.poo.tileObjects.Vazio;
+import pt.iscte.poo.tileObjects.*;
 import pt.iscte.poo.utils.Point2D;
 
 public abstract class GameElement implements ImageTile{
@@ -43,7 +35,7 @@ public abstract class GameElement implements ImageTile{
 	public String getName() {
 		return name;
 	}
-
+	
 	public static GameElement generatePixel (char sym, Point2D point) {
 		switch(sym) {
 		
@@ -57,6 +49,9 @@ public abstract class GameElement implements ImageTile{
 		case 'B': return new Bateria(point, "Bateria");
 		case 'O': return new Buraco(point, "Buraco");
 		case 'P': return new Palete(point, "Palete");
+		case 'M': return new Martelo(point, "Martelo");
+		case '%': return new ParedeRachada(point, "ParedeRachada");
+		case 'T': return new Teleporte(point, "Teleport");
 
 		default: throw new IllegalArgumentException();
 		}
