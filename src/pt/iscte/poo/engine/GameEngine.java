@@ -2,17 +2,11 @@ package pt.iscte.poo.engine;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import pt.iscte.poo.elements.ConsumableElement;
-import pt.iscte.poo.elements.GameElement;
-import pt.iscte.poo.elements.MovableElement;
-import pt.iscte.poo.gui.ImageMatrixGUI;
-import pt.iscte.poo.gui.ImageTile;
-import pt.iscte.poo.observer.Observed;
-import pt.iscte.poo.observer.Observer;
-import pt.iscte.poo.tileObjects.Empilhadora;
-import pt.iscte.poo.utils.Direction;
-import pt.iscte.poo.utils.Point2D;
+import pt.iscte.poo.elements.*;
+import pt.iscte.poo.gui.*;
+import pt.iscte.poo.observer.*;
+import pt.iscte.poo.tileObjects.*;
+import pt.iscte.poo.utils.*;
 
 public class GameEngine implements Observer {
 
@@ -54,9 +48,17 @@ public class GameEngine implements Observer {
 	public List<ImageTile> getImages() {
 		return tileList;
 	}
-	
+
 	public Status getStatus() {
 		return statusManager;
+	}
+	
+	public void setBobcat(Empilhadora bobcat) {
+		this.bobcat = bobcat;
+	}
+
+	public Empilhadora getBobcat() {
+		return bobcat;
 	}
 
 	public void startGame() {
@@ -72,111 +74,74 @@ public class GameEngine implements Observer {
 
 		generateStatus();
 		levelManager.generateLevel();
+		statusManager.validateTeleports();
 		updateStatus();
 		generateImages();
 
 	}
 
-	public boolean compObject(Point2D point, GameElement Element1) {
-		GameElement[] Elements = getGameElementAtPosition((point));
-		for (GameElement g : Elements) {
-			if (g != null && g.getClass() == Element1.getClass()) return true;
-		}
-		return false;
-	}
-
-	// Esta classe pode ser também utilizada para tratar do HighScore (Visto que terá os moves e o nome do jogador)
+	//Updates Window Header with current level stats
 	public void updateStatus() {
 		String header = statusManager.toString() + " - Energy: " + bobcat.getEnergy();
 		gui.setStatusMessage(header);
 	}
 
+	//Generates the current level Status to be displayed on the Window Header
 	public void generateStatus() {
 		statusManager = new Status(levelManager.getLevelPointer());
 	}
 
+	//Generates the Images on the Image Matrix
 	public void generateImages() {
 		gui.addImages(tileList);
 		gui.update();
 	}
 
+	//Clears both the Image Interface and the Elements List
 	public void clearLevel() {
 		gui.clearImages();
 		tileList.clear();
 	}
 
+	//Verifies if entered key is valid and proceeds to validate the movement from the bobcat class
 	@Override
 	public void update(Observed source) {
 		int key = gui.keyPressed();
 		if (Direction.isDirection(key)) {
-
-			move(key);
-			updateStatus();
+			//If the actionTurn returns true, adds a move to the count
+			if (bobcat.actionTurn(key)) { statusManager.addMove(); }
 			gui.update();
 			statusManager.verifyGame();
+			updateStatus();	
 		}
-	}
-
-	//Implementar esta validação na classe Empilhadora
-	private void move(int key) {
-		Direction direction = Direction.directionFor(key);
-		if (bobcat.inBounds(getPoint(direction, bobcat))) {
-			GameElement[] gE = getGameElementAtPosition(getPoint(direction, bobcat));
-
-			if (ElementCategory.CONSUMABLE_SLOT.contains(gE[1])) consumeItem(gE[1], direction);
-
-			if (gE[1] == null && ElementCategory.WALKABLE_SLOT.contains(gE[0])) moveBobcat(direction);
-
-			if (ElementCategory.PUSHABLE_SLOT.contains(gE[1])) {
-				MovableElement object = (MovableElement) gE[1];
-				if (moveCrate(getPoint(direction, object), object)) { moveBobcat(direction); bobcat.decreaseEnergy(); }
-			}
-		}
-
-	}
-
-	//Consumes the Object given and may affect the bobcat
-	private void consumeItem(GameElement element, Direction direction) {
-		ConsumableElement object = (ConsumableElement) element;
-		if (object.isConsumable()) { object.consumed(); moveBobcat(direction); }
 	}
 
 	//Removes the given element from the Image interface and Image List 
 	public void removeElement(ImageTile element) throws IllegalArgumentException {
-		gui.removeImage(element); tileList.remove(element);
-	}
-
-	//Gets the point 1 pixel in front of the passed object (Intended for MovableElements)
-	public Point2D getPoint(Direction direction, GameElement object) {
-		return object.getPosition().plus(direction.asVector());
-	}
-
-	private void moveBobcat(Direction direction) {
-		bobcat.move(getPoint(direction, bobcat));
-		statusManager.addMove();
-		bobcat.setFacing(direction);
-	}
-
-	public void setBobcat(Empilhadora bobcat) {
-		this.bobcat = bobcat;
-	}
-
-	public Empilhadora getBobcat() {
-		return bobcat;
+		gui.removeImage(element); tileList.remove(element); gui.update();
 	}
 	
-	//Mudar função para Movable object
-	private boolean moveCrate(Point2D newPosition, MovableElement crate) {
-		GameElement[] gE = getGameElementAtPosition(newPosition);
-		if (crate.inBounds(newPosition) && gE[1] == null && ElementCategory.WALKABLE_SLOT.contains(gE[0])) {
-			crate.move(newPosition);
-			return true;
-		} else {
-			return false;
-		}
+	//Adds the given element to the Image interface and Image List
+	public void addElement(ImageTile element) {
+		gui.addImage(element); tileList.add(element); gui.update();
 	}
 
-	private GameElement[] getGameElementAtPosition(Point2D newPosition) {
+	//Gets the point in front of the passed object (Intended for MovableElements)
+	public Point2D getNextPoint(Direction direction, GameElement object) {
+		return object.getPosition().plus(direction.asVector());
+	}
+	
+	//Compares the Elements's names in the given position, to the given Name
+	public boolean compObject(Point2D position, String Element) {
+		GameElement[] Elements = getGameElementAtPosition(position);
+		for (GameElement g : Elements) {
+			if (g != null && g.getName() == Element) return true;
+		}
+		return false;
+	}
+
+	//Retrieves all of the Elements from the given position and inserts them in order of their layer
+	public GameElement[] getGameElementAtPosition(Point2D newPosition) {
 		GameElement[] elemList = new GameElement[2]; //Size depending on the max layers
 		for (ImageTile tile : tileList) {
 			GameElement gE = (GameElement) tile;

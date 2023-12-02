@@ -13,19 +13,34 @@ public class Status {
 
 	private List<Alvo> targets;
 	private List<Teleporte> teleports;
+	private int BoxNum;
 
 	public Status(int level) {
 		this.moves = 0;
 		this.level = level;
 		this.targets = new ArrayList<>();
+		this.teleports = new ArrayList<>();
+		this.BoxNum = 0;
 	}
 	
 	public int getMoves() {
 		return moves;
 	}
+	
+	public void addBox() {
+		BoxNum++;
+	}
+	
+	public void removeBox() {
+		BoxNum--;
+	}
 
 	public void addTarget(Alvo alvo) {
 		targets.add(alvo);
+	}
+	
+	public void addTeleport(Teleporte portal) {
+		teleports.add(portal);
 	}
 
 	public void addMove() {
@@ -33,24 +48,28 @@ public class Status {
 	}
 
 	private void isGameOver() {
-		if (game.getBobcat().getEnergy() == 0) {
-			game.getGUI().setMessage("Bobcat energy ran out");
+		if (game.getBobcat() == null || game.getBobcat().getEnergy() == 0 || targets.size() > BoxNum) {
+			game.getGUI().setMessage("GAME OVER");
 			game.getLevel().constructLevel();
 		}
 	}
 
 	private boolean isGameWon() {
 		for (Alvo a :  targets) {
-			if (!a.verifyTarget(new Caixote(new Point2D(0,0), "Caixote"))) return false;
+			if (!a.verifyTarget("Caixote")) return false;
 		}
 		return true;
 	}
 	
 	public void verifyGame() {
 		isGameOver();
-		if (isGameWon()) {
-			game.getLevel().levelCleared();
-		}
+		if (isGameWon()) game.getLevel().levelCleared();
+	}
+	
+	public void validateTeleports() {
+		if (teleports.size() != 2) throw new IllegalStateException("There should only be 2 teleports!");
+		teleports.get(0).setDestination(teleports.get(1));
+		teleports.get(1).setDestination(teleports.get(0));
 	}
 
 	@Override

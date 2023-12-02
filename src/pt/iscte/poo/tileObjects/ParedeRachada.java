@@ -12,7 +12,7 @@ public class ParedeRachada extends ConsumableElement {
 	
 	@Override
 	public boolean isConsumable() {
-		return GameEngine.getInstance().getBobcat().hasHammer();
+		return GameEngine.getInstance().getBobcat().hasHammer(); //Checks if bobcat has Hammer Equipped
 	}
 
 }

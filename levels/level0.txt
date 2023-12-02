@@ -1,10 +1,10 @@
 =########=
 ##XC  CC## 
 # C C CC #
-#CC  CCC #
+#TC  CCC #
 #CC C C C#
 # C BC C #
-#     C C#
-#C P   MC#
-##%   CE##
-=###  ###=
+#     T C#
+#   C  MC#
+##  OP E##
+=###==###=

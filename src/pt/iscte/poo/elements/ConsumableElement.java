@@ -9,6 +9,7 @@ public class ConsumableElement extends GameElement implements Consumable{
 		super(position, name);
 	}
 	
+	@Override
 	public boolean isConsumable() {
 		return true;
 	}

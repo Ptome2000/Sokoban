@@ -13,7 +13,7 @@ public class Martelo extends ConsumableElement {
 	@Override
 	public void consumed() {
 		super.consumed();
-		GameEngine.getInstance().getBobcat().equipHammer();
+		GameEngine.getInstance().getBobcat().equipHammer(); //Consumes itself and Bobcat equips Hammer 
 	}
 
 }

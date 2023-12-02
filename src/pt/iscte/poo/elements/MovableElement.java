@@ -1,5 +1,8 @@
 package pt.iscte.poo.elements;
 
+import pt.iscte.poo.engine.ElementCategory;
+import pt.iscte.poo.engine.GameEngine;
+import pt.iscte.poo.tileObjects.*;
 import pt.iscte.poo.utils.Point2D;
 
 public class MovableElement extends GameElement implements Movable{
@@ -10,24 +13,41 @@ public class MovableElement extends GameElement implements Movable{
 
 	@Override
 	public void move(Point2D newPosition) {
-		setPosition(newPosition);
+		this.position = newPosition;
 	}
 
 	@Override
 	public boolean inBounds(Point2D newPosition) {
-		if (newPosition.getX()>=0 && newPosition.getX()<10 &&
-				newPosition.getY()>=0 && newPosition.getY()<10) return true;
+		if (newPosition.getX()>=0 && newPosition.getX()<GameEngine.GRID_WIDTH &&
+				newPosition.getY()>=0 && newPosition.getY()<GameEngine.GRID_HEIGHT) return true;
 		return false;
-	}
-	
-	@Override
-	public int getLayer() {
-		return 1;
 	}
 
 	@Override
-	public void setPosition(Point2D position) {
-		super.position = position;
+	public boolean canMove(Point2D newPosition, GameElement[] gE) {
+		if (this.inBounds(newPosition) && gE[1] == null) {
+			if (ElementCategory.WALKABLE_SLOT.contains(gE)) {
+				this.move(newPosition);
+				foundExtra(gE[0]);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void foundExtra(GameElement walkable) {
+		String name = walkable.getName();
+		switch (name) {
+		case "Teleporte": Teleporte teleport = (Teleporte) walkable; teleport.teleportAction(this); break;
+		case "Buraco": Buraco hole = (Buraco) walkable; hole.holeAction(this); break;
+		
+		}
+	}
+
+	@Override
+	public int getLayer() {
+		return 1;
 	}
 
 }

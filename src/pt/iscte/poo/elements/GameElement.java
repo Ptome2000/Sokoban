@@ -9,18 +9,17 @@ public abstract class GameElement implements ImageTile{
 
 	protected Point2D position;
 	private String name;
+	private static GameEngine game = GameEngine.getInstance();
 
 	public GameElement(Point2D position, String name) {
 		this.position = position;
 		this.name = name;
 	}
-	
+
 	protected void setName(String name) {
 		this.name = name;
 	}
-	
-	public void setPosition(Point2D position) {}
-	
+
 	@Override
 	public int getLayer() {
 		return 0;
@@ -35,23 +34,23 @@ public abstract class GameElement implements ImageTile{
 	public String getName() {
 		return name;
 	}
-	
+
+	//Factory Function to obtain the corresponding Element by the given symbol
 	public static GameElement generatePixel (char sym, Point2D point) {
 		switch(sym) {
-		
-		//Adicionar nome na creação
+
 		case ' ': return new Chao(point, "Chao");
 		case '=': return new Vazio(point, "Vazio");
 		case '#': return new Parede(point, "Parede");
-		case 'X': Alvo a = new Alvo(point, "Alvo"); GameEngine.getInstance().getStatus().addTarget(a); return a;
-		case 'E': Empilhadora bobcat = new Empilhadora(point, "Empilhadora_U"); GameEngine.getInstance().setBobcat(bobcat); return bobcat;
-		case 'C': return new Caixote(point, "Caixote");
+		case 'X': Alvo a = new Alvo(point, "Alvo"); game.getStatus().addTarget(a); return a;
+		case 'E': Empilhadora bobcat = new Empilhadora(point, "Empilhadora_U"); game.setBobcat(bobcat); return bobcat;
+		case 'C': game.getStatus().addBox(); return new Caixote(point, "Caixote");
 		case 'B': return new Bateria(point, "Bateria");
 		case 'O': return new Buraco(point, "Buraco");
 		case 'P': return new Palete(point, "Palete");
 		case 'M': return new Martelo(point, "Martelo");
 		case '%': return new ParedeRachada(point, "ParedeRachada");
-		case 'T': return new Teleporte(point, "Teleport");
+		case 'T': Teleporte t = new Teleporte(point, "Teleporte"); game.getStatus().addTeleport(t); return t;
 
 		default: throw new IllegalArgumentException();
 		}

@@ -11,7 +11,7 @@ import pt.iscte.poo.tileObjects.Chao;
 import pt.iscte.poo.utils.Point2D;
 
 public class Level extends FileManager{
-
+	
 	private File[] levels;
 	private int levelPointer;
 	private GameEngine game = GameEngine.getInstance();

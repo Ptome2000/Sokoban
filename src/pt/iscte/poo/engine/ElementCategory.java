@@ -1,9 +1,6 @@
 package pt.iscte.poo.engine;
 
-import pt.iscte.poo.elements.ConsumableElement;
-import pt.iscte.poo.elements.GameElement;
-import pt.iscte.poo.elements.MovableElement;
-import pt.iscte.poo.elements.WalkableElement;
+import pt.iscte.poo.elements.*;
 import pt.iscte.poo.utils.Point2D;
 
 public enum ElementCategory {
@@ -21,18 +18,13 @@ public enum ElementCategory {
 	public GameElement[] getElements() {
 		return elements;
 	}
-	
-	public boolean contains(GameElement element) {
-		for (GameElement categoryElement : elements) {
-			if (categoryElement != null && categoryElement.getClass().isInstance(element)) {
-				if (this == WALKABLE_SLOT) {
-					WalkableElement walkableElement = (WalkableElement) element;
-					return walkableElement.isWalkable();
-				} else {
-					return true;
-				}
-			}
+
+	public boolean contains(GameElement[] element) {
+		if (this == WALKABLE_SLOT) {
+			WalkableElement walkableElement = (WalkableElement) element[0];
+			return walkableElement.isWalkable();
 		}
+		if (elements[0].getClass().isInstance(element[0]) && elements[1].getClass().isInstance(element[1])) return true;
 		return false;
 	}
 
