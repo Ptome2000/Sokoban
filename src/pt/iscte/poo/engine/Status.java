@@ -67,9 +67,14 @@ public class Status {
 	}
 	
 	public void validateTeleports() {
-		if (teleports.size() != 2) throw new IllegalStateException("There should only be 2 teleports!");
-		teleports.get(0).setDestination(teleports.get(1));
-		teleports.get(1).setDestination(teleports.get(0));
+		if (teleports.size() > 0){
+			if (teleports.size() != 2) {
+				System.out.println("teleport size "+ teleports.size());
+				throw new IllegalStateException("There should only be 2 teleports!");
+			}
+			teleports.get(0).setDestination(teleports.get(1));
+			teleports.get(1).setDestination(teleports.get(0));
+		}
 	}
 
 	@Override
