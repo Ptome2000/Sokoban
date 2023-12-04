@@ -134,21 +134,6 @@ public class Point2D implements Serializable { // Added 23-Apr-2018
 				}
 		return neighbours;
 	}
-	
-	public List<Point2D> getWideNeighbourhoodExcludeDiagonal() {
-		int[] dxValues = {-1, 0, 1};
-		int[] dyValues = {-1, 0, 1};
-
-		List<Point2D> neighbours = new ArrayList<>();
-
-		for (int dx : dxValues)
-			for (int dy : dyValues)
-				if (dx!=0 || dy!=0) {
-					Vector2D v = new Vector2D(dx, dy);
-					neighbours.add(this.plus(v));
-				}
-		return neighbours;
-	}
 
 	public Vector2D vectorTo(Point2D p) {
 		

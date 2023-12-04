@@ -55,7 +55,7 @@ public class Status {
 
 	private void isGameOver() {
 		if (game.getBobcat() == null || game.getBobcat().getEnergy() == 0 
-				|| targets.size() > BoxNum || validateCaixotesMoves() == false ) {
+				|| targets.size() > BoxNum || validateBoxMoves() == false ) {
 			game.getGUI().setMessage("GAME OVER");
 			game.getLevel().constructLevel();
 		}
@@ -89,12 +89,11 @@ public class Status {
 		return "Level: " + level + " - Player: " + game.getScores().getPlayer() + " - Moves: " + moves;
 	}
 
-	public boolean validateCaixotesMoves() {
+	public boolean validateBoxMoves() {
 		boolean[] validMoves = new boolean[caixotes.size()];
 		int i = 0;
 		while(i < caixotes.size()) {
 			for(Caixote caixote : caixotes) {
-
 				boolean valid = game.hasMoves(caixote);
 				validMoves[i] = valid;
 				if(valid) {
