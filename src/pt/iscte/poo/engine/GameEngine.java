@@ -52,7 +52,7 @@ public class GameEngine implements Observer {
 	public Status getStatus() {
 		return statusManager;
 	}
-	
+
 	public void setBobcat(Empilhadora bobcat) {
 		this.bobcat = bobcat;
 	}
@@ -120,7 +120,7 @@ public class GameEngine implements Observer {
 	public void removeElement(ImageTile element) throws IllegalArgumentException {
 		gui.removeImage(element); tileList.remove(element); gui.update();
 	}
-	
+
 	//Adds the given element to the Image interface and Image List
 	public void addElement(ImageTile element) {
 		gui.addImage(element); tileList.add(element); gui.update();
@@ -130,12 +130,12 @@ public class GameEngine implements Observer {
 	public Point2D getNextPoint(Direction direction, GameElement object) {
 		return object.getPosition().plus(direction.asVector());
 	}
-	
+
 	//Compares the Elements's names in the given position, to the given Name
 	public boolean compObject(Point2D position, String Element) {
 		GameElement[] Elements = getGameElementAtPosition(position);
 		for (GameElement g : Elements) {
-			if (g != null && g.getName() == Element) return true;
+			if (g != null && g.getName().equals(Element)) return true;
 		}
 		return false;
 	}
@@ -150,6 +150,20 @@ public class GameEngine implements Observer {
 			}
 		}
 		return elemList;
+	}
+
+	//check if box has moves
+	public boolean hasMoves(Caixote caixote){
+		List<Point2D> possiblePositions = caixote.getPosition().getWideNeighbourhoodPoints();
+		if(compObject(possiblePositions.get(3), "Parede") &&
+				(compObject(possiblePositions.get(1), "Parede")|| compObject(possiblePositions.get(6), "Parede"))){
+
+			return false;}
+		if(compObject(possiblePositions.get(4), "Parede") &&
+				(compObject(possiblePositions.get(1), "Parede")|| compObject(possiblePositions.get(6), "Parede"))){
+			return false;
+		}
+		return true;	
 	}
 
 }

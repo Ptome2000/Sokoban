@@ -13,6 +13,7 @@ public class Status {
 
 	private List<Alvo> targets;
 	private List<Teleporte> teleports;
+	private List<Caixote> caixotes;
 	private int BoxNum;
 
 	public Status(int level) {
@@ -20,6 +21,7 @@ public class Status {
 		this.level = level;
 		this.targets = new ArrayList<>();
 		this.teleports = new ArrayList<>();
+		this.caixotes = new ArrayList<>();
 		this.BoxNum = 0;
 	}
 	
@@ -27,12 +29,14 @@ public class Status {
 		return moves;
 	}
 	
-	public void addBox() {
+	public void addBox(Caixote caixote) {
 		BoxNum++;
+		caixotes.add(caixote);
 	}
 	
-	public void removeBox() {
+	public void removeBox(Caixote caixote) {
 		BoxNum--;
+		caixotes.remove(caixote);
 	}
 
 	public void addTarget(Alvo alvo) {
@@ -42,13 +46,16 @@ public class Status {
 	public void addTeleport(Teleporte portal) {
 		teleports.add(portal);
 	}
+	
 
+	
 	public void addMove() {
 		this.moves++;
 	}
 
 	private void isGameOver() {
-		if (game.getBobcat() == null || game.getBobcat().getEnergy() == 0 || targets.size() > BoxNum) {
+		if (game.getBobcat() == null || game.getBobcat().getEnergy() == 0 
+				|| targets.size() > BoxNum || validateCaixotesMoves() == false ) {
 			game.getGUI().setMessage("GAME OVER");
 			game.getLevel().constructLevel();
 		}
@@ -81,6 +88,25 @@ public class Status {
 	public String toString() {
 		return "Level: " + level + " - Player: " + game.getScores().getPlayer() + " - Moves: " + moves;
 	}
+
+	public boolean validateCaixotesMoves() {
+		boolean[] validMoves = new boolean[caixotes.size()];
+		int i = 0;
+		while(i < caixotes.size()) {
+			for(Caixote caixote : caixotes) {
+
+				boolean valid = game.hasMoves(caixote);
+				validMoves[i] = valid;
+				if(valid) {
+					return true;
+				}
+				i++;
+			}
+		}
+		return false;
+	}
+
+
 
 
 

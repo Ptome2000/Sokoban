@@ -1,12 +1,15 @@
 package pt.iscte.poo.elements;
 
+import java.util.List;
+
 import pt.iscte.poo.engine.ElementCategory;
 import pt.iscte.poo.engine.GameEngine;
 import pt.iscte.poo.tileObjects.*;
 import pt.iscte.poo.utils.Point2D;
 
 public class MovableElement extends GameElement implements Movable{
-
+ 
+	
 	public MovableElement(Point2D position, String name) {
 		super(position, name);
 	}
@@ -49,5 +52,5 @@ public class MovableElement extends GameElement implements Movable{
 	public int getLayer() {
 		return 1;
 	}
-
+	
 }

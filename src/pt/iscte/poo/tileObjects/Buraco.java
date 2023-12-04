@@ -20,7 +20,7 @@ public class Buraco extends WalkableElement {
 			game.addElement(palete.transformPalete());
 		}
 		else if (verifyTarget(GameEngine.getInstance().getBobcat().getName())) game.setBobcat(null);
-		else game.getStatus().removeBox();
+		else game.getStatus().removeBox((Caixote) element);
 
 		game.removeElement(element);
 	}
