@@ -19,7 +19,7 @@ public class Level extends FileManager{
 
 	public Level() {
 		loadLevels();
-		this.levelPointer = 6;
+		this.levelPointer = 0;
 	}
 
 	//Ordenação na pasta importa?
