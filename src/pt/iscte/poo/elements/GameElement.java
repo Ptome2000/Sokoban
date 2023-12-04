@@ -44,7 +44,7 @@ public abstract class GameElement implements ImageTile{
 		case '#': return new Parede(point, "Parede");
 		case 'X': Alvo a = new Alvo(point, "Alvo"); game.getStatus().addTarget(a); return a;
 		case 'E': Empilhadora bobcat = new Empilhadora(point, "Empilhadora_U"); game.setBobcat(bobcat); return bobcat;
-		case 'C': game.getStatus().addBox(); return new Caixote(point, "Caixote");
+		case 'C': Caixote box =  new Caixote(point, "Caixote"); game.getStatus().addBox(box);return box;
 		case 'B': return new Bateria(point, "Bateria");
 		case 'O': return new Buraco(point, "Buraco");
 		case 'P': return new Palete(point, "Palete");
@@ -52,7 +52,7 @@ public abstract class GameElement implements ImageTile{
 		case '%': return new ParedeRachada(point, "ParedeRachada");
 		case 'T': Teleporte t = new Teleporte(point, "Teleporte"); game.getStatus().addTeleport(t); return t;
 
-		default: throw new IllegalArgumentException();
+		default: throw new IllegalArgumentException("Unknown symbol: " + sym);
 		}
 	}
 }

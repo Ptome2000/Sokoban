@@ -52,7 +52,7 @@ public class GameEngine implements Observer {
 	public Status getStatus() {
 		return statusManager;
 	}
-	
+
 	public void setBobcat(Empilhadora bobcat) {
 		this.bobcat = bobcat;
 	}
@@ -74,7 +74,7 @@ public class GameEngine implements Observer {
 
 		generateStatus();
 		levelManager.generateLevel();
-		statusManager.validateTeleports();
+		//statusManager.validateTeleports();
 		updateStatus();
 		generateImages();
 
@@ -120,7 +120,7 @@ public class GameEngine implements Observer {
 	public void removeElement(ImageTile element) throws IllegalArgumentException {
 		gui.removeImage(element); tileList.remove(element); gui.update();
 	}
-	
+
 	//Adds the given element to the Image interface and Image List
 	public void addElement(ImageTile element) {
 		gui.addImage(element); tileList.add(element); gui.update();
@@ -130,16 +130,25 @@ public class GameEngine implements Observer {
 	public Point2D getNextPoint(Direction direction, GameElement object) {
 		return object.getPosition().plus(direction.asVector());
 	}
-	
+
 	//Compares the Elements's names in the given position, to the given Name
 	public boolean compObject(Point2D position, String Element) {
 		GameElement[] Elements = getGameElementAtPosition(position);
 		for (GameElement g : Elements) {
-			if (g != null && g.getName() == Element) return true;
+			if (g != null && g.getName().equals(Element)) return true;
 		}
 		return false;
 	}
 
+	//returns specific object at given position 
+	public GameElement retunGameElementAtPosition(Point2D position, String Element) {
+		GameElement[] Elements = getGameElementAtPosition(position);
+		for (GameElement g : Elements) {
+			if (g != null && g.getName().equals(Element)) return g;
+		}
+		return null;
+	}
+	
 	//Retrieves all of the Elements from the given position and inserts them in order of their layer
 	public GameElement[] getGameElementAtPosition(Point2D newPosition) {
 		GameElement[] elemList = new GameElement[2]; //Size depending on the max layers
@@ -150,6 +159,37 @@ public class GameEngine implements Observer {
 			}
 		}
 		return elemList;
+	}
+
+	//check if box has valid moves
+	
+	/***
+	 * Up: compObject(possiblePositions.get(3)
+	 * Down: compObject(possiblePositions.get(4)
+	 * Left: compObject(possiblePositions.get(1)
+	 * Right: compObject(possiblePositions.get(6)
+	 */
+	public boolean hasMoves(Caixote caixote){
+		List<Point2D> possiblePositions = caixote.getPosition().getWideNeighbourhoodPoints();
+		if((compObject(possiblePositions.get(3), "Parede") ||
+				(compObject(possiblePositions.get(3),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(3),"Caixote")).getHasMoves() == false))
+				&&
+				((compObject(possiblePositions.get(1), "Parede")||
+						(compObject(possiblePositions.get(1),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(1),"Caixote")).getHasMoves() == false) ||
+						(compObject(possiblePositions.get(6), "Parede")  || 
+								(compObject(possiblePositions.get(6),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(6),"Caixote")).getHasMoves() == false))))){
+			return false;
+		}
+		if((compObject(possiblePositions.get(4), "Parede") ||
+				(compObject(possiblePositions.get(4),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(4),"Caixote")).getHasMoves() == false))
+				&&
+				((compObject(possiblePositions.get(1), "Parede")||
+						(compObject(possiblePositions.get(1),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(1),"Caixote")).getHasMoves() == false) ||
+						(compObject(possiblePositions.get(6), "Parede")  || 
+								(compObject(possiblePositions.get(6),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(6),"Caixote")).getHasMoves() == false))))){
+			return false;
+		}
+		return true;	
 	}
 
 }

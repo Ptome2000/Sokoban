@@ -3,7 +3,6 @@ package pt.iscte.poo.engine;
 import java.util.ArrayList;
 import java.util.List;
 import pt.iscte.poo.tileObjects.*;
-import pt.iscte.poo.utils.Point2D;
 
 public class Status {
 
@@ -13,6 +12,7 @@ public class Status {
 
 	private List<Alvo> targets;
 	private List<Teleporte> teleports;
+	private List<Caixote> caixotes;
 	private int BoxNum;
 
 	public Status(int level) {
@@ -20,6 +20,7 @@ public class Status {
 		this.level = level;
 		this.targets = new ArrayList<>();
 		this.teleports = new ArrayList<>();
+		this.caixotes = new ArrayList<>();
 		this.BoxNum = 0;
 	}
 	
@@ -27,12 +28,14 @@ public class Status {
 		return moves;
 	}
 	
-	public void addBox() {
+	public void addBox(Caixote caixote) {
 		BoxNum++;
+		caixotes.add(caixote);
 	}
 	
-	public void removeBox() {
+	public void removeBox(Caixote caixote) {
 		BoxNum--;
+		caixotes.remove(caixote);
 	}
 
 	public void addTarget(Alvo alvo) {
@@ -41,14 +44,18 @@ public class Status {
 	
 	public void addTeleport(Teleporte portal) {
 		teleports.add(portal);
+		validateTeleports();
 	}
+	
 
+	
 	public void addMove() {
 		this.moves++;
 	}
 
 	private void isGameOver() {
-		if (game.getBobcat() == null || game.getBobcat().getEnergy() == 0 || targets.size() > BoxNum) {
+		if (game.getBobcat() == null || game.getBobcat().getEnergy() == 0 
+				|| targets.size() > BoxNum || validateBoxMoves() == false ) {
 			game.getGUI().setMessage("GAME OVER");
 			game.getLevel().constructLevel();
 		}
@@ -62,14 +69,22 @@ public class Status {
 	}
 	
 	public void verifyGame() {
-		isGameOver();
-		if (isGameWon()) game.getLevel().levelCleared();
+		
+		if (!isGameWon()){
+			isGameOver();
+			
+		}else game.getLevel().levelCleared();
 	}
 	
 	public void validateTeleports() {
-		if (teleports.size() != 2) throw new IllegalStateException("There should only be 2 teleports!");
-		teleports.get(0).setDestination(teleports.get(1));
-		teleports.get(1).setDestination(teleports.get(0));
+		if (teleports.size() > 1){
+			if (teleports.size() != 2) {
+				System.out.println("teleport size "+ teleports.size());
+				throw new IllegalStateException("There should only be 2 teleports!");
+			}
+			teleports.get(0).setDestination(teleports.get(1));
+			teleports.get(1).setDestination(teleports.get(0));
+		}
 	}
 
 	@Override
@@ -77,6 +92,17 @@ public class Status {
 		return "Level: " + level + " - Player: " + game.getScores().getPlayer() + " - Moves: " + moves;
 	}
 
+	//validate if boxes have valid moves
+	public boolean validateBoxMoves() {
 
+		for(Caixote caixote : caixotes) {
+			boolean valid = game.hasMoves(caixote);
+			caixote.setHasMoves(valid);
+			if(valid) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

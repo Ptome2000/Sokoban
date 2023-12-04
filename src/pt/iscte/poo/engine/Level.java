@@ -40,9 +40,16 @@ public class Level extends FileManager{
 	public void levelCleared() {
 		game.getScores().calculateScores();
 		this.levelPointer++;
-		game.getGUI().setMessage("Level " + levelPointer + " cleared");
-		constructLevel();
+		if(this.levelPointer >= levels.length){
+			game.getGUI().setMessage("You Win!");
+			return;
+		}else if(this.levelPointer < levels.length){
+			game.getGUI().setMessage("Level " + levelPointer + " cleared");
+			constructLevel();
+		}
 	}
+	
+	
 
 	public void constructLevel() {
 		game.clearLevel();

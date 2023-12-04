@@ -1,3 +1,2 @@
-Player1;000
-Player2;000
-Player3;000
+G;100
+Player2;0
