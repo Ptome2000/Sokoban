@@ -74,7 +74,7 @@ public class GameEngine implements Observer {
 
 		generateStatus();
 		levelManager.generateLevel();
-		statusManager.validateTeleports();
+		//statusManager.validateTeleports();
 		updateStatus();
 		generateImages();
 
@@ -140,6 +140,15 @@ public class GameEngine implements Observer {
 		return false;
 	}
 
+	//returns specific object at given position 
+	public GameElement retunGameElementAtPosition(Point2D position, String Element) {
+		GameElement[] Elements = getGameElementAtPosition(position);
+		for (GameElement g : Elements) {
+			if (g != null && g.getName().equals(Element)) return g;
+		}
+		return null;
+	}
+	
 	//Retrieves all of the Elements from the given position and inserts them in order of their layer
 	public GameElement[] getGameElementAtPosition(Point2D newPosition) {
 		GameElement[] elemList = new GameElement[2]; //Size depending on the max layers
@@ -155,12 +164,22 @@ public class GameEngine implements Observer {
 	//check if box has moves
 	public boolean hasMoves(Caixote caixote){
 		List<Point2D> possiblePositions = caixote.getPosition().getWideNeighbourhoodPoints();
-		if(compObject(possiblePositions.get(3), "Parede") &&
-				(compObject(possiblePositions.get(1), "Parede")|| compObject(possiblePositions.get(6), "Parede"))){
-
-			return false;}
-		if(compObject(possiblePositions.get(4), "Parede") &&
-				(compObject(possiblePositions.get(1), "Parede")|| compObject(possiblePositions.get(6), "Parede"))){
+		if((compObject(possiblePositions.get(3), "Parede") ||
+				(compObject(possiblePositions.get(3),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(3),"Caixote")).getHasMoves() == false))
+				&&
+				((compObject(possiblePositions.get(1), "Parede")||
+						(compObject(possiblePositions.get(1),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(1),"Caixote")).getHasMoves() == false) ||
+						(compObject(possiblePositions.get(6), "Parede")  || 
+								(compObject(possiblePositions.get(6),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(6),"Caixote")).getHasMoves() == false))))){
+			return false;
+		}
+		if((compObject(possiblePositions.get(4), "Parede") ||
+				(compObject(possiblePositions.get(4),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(4),"Caixote")).getHasMoves() == false))
+				&&
+				((compObject(possiblePositions.get(1), "Parede")||
+						(compObject(possiblePositions.get(1),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(1),"Caixote")).getHasMoves() == false) ||
+						(compObject(possiblePositions.get(6), "Parede")  || 
+								(compObject(possiblePositions.get(6),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(6),"Caixote")).getHasMoves() == false))))){
 			return false;
 		}
 		return true;	

@@ -45,6 +45,7 @@ public class Status {
 	
 	public void addTeleport(Teleporte portal) {
 		teleports.add(portal);
+		validateTeleports();
 	}
 	
 
@@ -69,12 +70,15 @@ public class Status {
 	}
 	
 	public void verifyGame() {
-		isGameOver();
-		if (isGameWon()) game.getLevel().levelCleared();
+		
+		if (!isGameWon()){
+			isGameOver();
+			
+		}else game.getLevel().levelCleared();
 	}
 	
 	public void validateTeleports() {
-		if (teleports.size() > 0){
+		if (teleports.size() > 1){
 			if (teleports.size() != 2) {
 				System.out.println("teleport size "+ teleports.size());
 				throw new IllegalStateException("There should only be 2 teleports!");
@@ -90,23 +94,15 @@ public class Status {
 	}
 
 	public boolean validateBoxMoves() {
-		boolean[] validMoves = new boolean[caixotes.size()];
-		int i = 0;
-		while(i < caixotes.size()) {
-			for(Caixote caixote : caixotes) {
-				boolean valid = game.hasMoves(caixote);
-				validMoves[i] = valid;
-				if(valid) {
-					return true;
-				}
-				i++;
+
+		for(Caixote caixote : caixotes) {
+			boolean valid = game.hasMoves(caixote);
+			caixote.setHasMoves(valid);
+			if(valid) {
+				return true;
 			}
 		}
 		return false;
 	}
-
-
-
-
 
 }
