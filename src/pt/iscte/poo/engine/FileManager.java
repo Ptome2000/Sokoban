@@ -21,7 +21,7 @@ public abstract class FileManager {
 
 	public void createFolder(String folder) {
 		File dir = new File(folder);
-		dir.mkdir();
+		dir.mkdirs();
 	}
 
 	public String getPath() {

@@ -1,3 +1,2 @@
-p;12
 Player2;0
-Pedro;-6
+M;-57

@@ -1,2 +1,3 @@
-G;100
-Player2;0
+M;94
+L;88
+Mariza;87

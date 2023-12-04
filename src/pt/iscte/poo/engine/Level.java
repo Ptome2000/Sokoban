@@ -19,7 +19,7 @@ public class Level extends FileManager{
 
 	public Level() {
 		loadLevels();
-		this.levelPointer = 0;
+		this.levelPointer = 6;
 	}
 
 	//Ordenação na pasta importa?
@@ -38,13 +38,15 @@ public class Level extends FileManager{
 	}
 
 	public void levelCleared() {
-		game.getScores().calculateScores();
-		this.levelPointer++;
-		if(this.levelPointer >= levels.length){
+		
+		if(this.levelPointer >= levels.length-1){
+			game.getScores().calculateScores();
 			game.getGUI().setMessage("You Win!");
 			return;
-		}else if(this.levelPointer < levels.length){
+		}else if(this.levelPointer <levels.length){
+			game.getScores().calculateScores();
 			game.getGUI().setMessage("Level " + levelPointer + " cleared");
+			this.levelPointer++;
 			constructLevel();
 		}
 	}

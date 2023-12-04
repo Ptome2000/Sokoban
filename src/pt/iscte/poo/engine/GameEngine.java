@@ -74,7 +74,6 @@ public class GameEngine implements Observer {
 
 		generateStatus();
 		levelManager.generateLevel();
-		//statusManager.validateTeleports();
 		updateStatus();
 		generateImages();
 

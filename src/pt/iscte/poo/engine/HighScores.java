@@ -63,9 +63,11 @@ public class HighScores extends FileManager{
 	private void writeScoreFile() {
 		PrintWriter writer;
 		try {
+			System.out.println(folder + "/" + "level" + game.getLevel().getLevelPointer() + ".txt");
 			writer = new PrintWriter(new File(folder + "/" + "level" + game.getLevel().getLevelPointer() + ".txt"));
 			for (Entry<String, Integer> score : sorted) {
 				writer.print(score.getKey() + ";" + score.getValue() + "\n");
+				
 			}
 			writer.close();
 		} catch (FileNotFoundException e) {
