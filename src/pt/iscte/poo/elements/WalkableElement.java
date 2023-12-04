@@ -24,4 +24,7 @@ public class WalkableElement extends GameElement implements Walkable{
 		return GameEngine.getInstance().compObject(this.getPosition(), Element); 
 	}
 
+	@Override
+	public void action(MovableElement element) {}
+
 }

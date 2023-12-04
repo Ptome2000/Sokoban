@@ -28,21 +28,12 @@ public class MovableElement extends GameElement implements Movable{
 		if (this.inBounds(newPosition) && gE[1] == null) {
 			if (ElementCategory.WALKABLE_SLOT.contains(gE)) {
 				this.move(newPosition);
-				foundExtra(gE[0]);
+				WalkableElement floor = (WalkableElement) gE[0];
+				floor.action(this);
 				return true;
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public void foundExtra(GameElement walkable) {
-		String name = walkable.getName();
-		switch (name) {
-		case "Teleporte": Teleporte teleport = (Teleporte) walkable; teleport.teleportAction(this); break;
-		case "Buraco": Buraco hole = (Buraco) walkable; hole.holeAction(this); break;
-		
-		}
 	}
 
 	@Override

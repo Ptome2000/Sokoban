@@ -3,6 +3,7 @@ package pt.iscte.poo.tileObjects;
 import pt.iscte.poo.elements.ConsumableElement;
 import pt.iscte.poo.elements.GameElement;
 import pt.iscte.poo.elements.MovableElement;
+import pt.iscte.poo.elements.WalkableElement;
 import pt.iscte.poo.engine.ElementCategory;
 import pt.iscte.poo.engine.GameEngine;
 import pt.iscte.poo.utils.Direction;
@@ -73,7 +74,8 @@ public class Empilhadora extends MovableElement {
 		else if (ElementCategory.PUSHABLE_SLOT.contains(gE)) {
 			if (pushObject(direction, gE[1])) {
 				this.move(newPosition); this.decreaseEnergy();
-				foundExtra(gE[0]);
+				WalkableElement floor = (WalkableElement) gE[0];
+				floor.action(this);
 				return true;
 			}
 		}

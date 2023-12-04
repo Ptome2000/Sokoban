@@ -13,7 +13,5 @@ public interface Movable {
 	//Checks if the given position is WALKABLE and calls the move method
 	public boolean canMove(Point2D newPosition, GameElement[] elements);
 	
-	//Validates the given Element on a switch and its specific action
-	public void foundExtra(GameElement walkable);
 
 }

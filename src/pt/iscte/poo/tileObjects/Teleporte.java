@@ -13,11 +13,13 @@ public class Teleporte extends WalkableElement {
 	}
 	
 	public void setDestination(Teleporte destination) {
+		//Adicionar exceçao para verificar se o objeto é criado corretamente
 		this.destination = destination;
 	}
 	
 	//Transports the Element to the position of the other Teleport
-	public void teleportAction(MovableElement element) {
+	@Override
+	public void action(MovableElement element) {
 		if (!destination.teleportOccupied()) {
 			element.move(destination.getPosition());
 		}

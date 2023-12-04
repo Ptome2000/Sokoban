@@ -13,8 +13,9 @@ public class Buraco extends WalkableElement {
 		super(position, name);
 	}
 
-	//When called, the element provided will be removed from the Game
-	public void holeAction(MovableElement element) {
+	
+	@Override
+	public void action(MovableElement element) {
 		if (verifyTarget("Palete")) {
 			Palete palete = (Palete) element;
 			game.addElement(palete.transformPalete());
@@ -22,6 +23,7 @@ public class Buraco extends WalkableElement {
 		else if (verifyTarget(GameEngine.getInstance().getBobcat().getName())) game.setBobcat(null);
 		else game.getStatus().removeBox();
 
+		//When called, the element provided will be removed from the Game
 		game.removeElement(element);
 	}
 
