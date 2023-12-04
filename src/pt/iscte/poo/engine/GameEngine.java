@@ -161,7 +161,14 @@ public class GameEngine implements Observer {
 		return elemList;
 	}
 
-	//check if box has moves
+	//check if box has valid moves
+	
+	/***
+	 * Up: compObject(possiblePositions.get(3)
+	 * Down: compObject(possiblePositions.get(4)
+	 * Left: compObject(possiblePositions.get(1)
+	 * Right: compObject(possiblePositions.get(6)
+	 */
 	public boolean hasMoves(Caixote caixote){
 		List<Point2D> possiblePositions = caixote.getPosition().getWideNeighbourhoodPoints();
 		if((compObject(possiblePositions.get(3), "Parede") ||

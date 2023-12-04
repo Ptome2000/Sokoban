@@ -3,7 +3,6 @@ package pt.iscte.poo.engine;
 import java.util.ArrayList;
 import java.util.List;
 import pt.iscte.poo.tileObjects.*;
-import pt.iscte.poo.utils.Point2D;
 
 public class Status {
 
@@ -93,6 +92,7 @@ public class Status {
 		return "Level: " + level + " - Player: " + game.getScores().getPlayer() + " - Moves: " + moves;
 	}
 
+	//validate if boxes have valid moves
 	public boolean validateBoxMoves() {
 
 		for(Caixote caixote : caixotes) {
