@@ -11,7 +11,7 @@ import pt.iscte.poo.tileObjects.Chao;
 import pt.iscte.poo.utils.Point2D;
 
 public class Level extends FileManager{
-	
+
 	private File[] levels;
 	private int levelPointer;
 	private GameEngine game = GameEngine.getInstance();
@@ -50,8 +50,6 @@ public class Level extends FileManager{
 			constructLevel();
 		}
 	}
-	
-	
 
 	public void constructLevel() {
 		game.clearLevel();
@@ -79,8 +77,8 @@ public class Level extends FileManager{
 				}
 			}
 			scan.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		} catch (FileNotFoundException err) {
+			err.printStackTrace();
 		}
 	}
 
