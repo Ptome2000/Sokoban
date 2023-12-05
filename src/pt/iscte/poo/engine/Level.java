@@ -21,7 +21,7 @@ public class Level extends FileManager{
 
 	public Level() {
 		this.levels = loadLevels();
-		this.levelPointer = 0;
+		this.levelPointer = 6;
 	}
 
 	//Loads Levels into an Array of Files
