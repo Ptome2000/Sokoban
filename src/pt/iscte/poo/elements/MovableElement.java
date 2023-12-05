@@ -43,16 +43,21 @@ public class MovableElement extends GameElement implements Movable{
 	//Check if box has valid moves by verifying the adjacent points
 	public boolean hasMovesOptimized() {
 		List<Point2D> possiblePositions = this.getPosition().getNeighbourhoodPoints();
-		List<Boolean> PossibleMoves = new ArrayList<>();
+		
 
 		//If the position has an Obstacle, add the opposite result to the List (hasObstacle TRUE -> PossibleMove FALSE)
-		PossibleMoves.add(!hasObstacle(possiblePositions.get(0)));	//LEFT
-		PossibleMoves.add(!hasObstacle(possiblePositions.get(1)));	//UP
-		PossibleMoves.add(!hasObstacle(possiblePositions.get(2)));	//RIGHT
-		PossibleMoves.add(!hasObstacle(possiblePositions.get(3)));	//DOWN
+		boolean canMoveLeft = !hasObstacle(possiblePositions.get(0));	//LEFT
+		boolean canMoveUp = !hasObstacle(possiblePositions.get(1));		//UP
+		boolean canMoveRight = !hasObstacle(possiblePositions.get(2));	//RIGHT
+		boolean canMoveDown = !hasObstacle(possiblePositions.get(3));	//DOWN
 
-		PossibleMoves.removeIf(m -> !m); //Removes the moves that are not possible
-		if (PossibleMoves.size() > 2) return true;
+		/** //Removes the moves that are not possible (Inefficient for some levels)
+		List<Boolean> PossibleMoves = new ArrayList<>();
+		PossibleMoves.removeIf(m -> !m); 
+		**/
+		
+		//Can only move Horizontally or Vertically
+		if (canMoveLeft && canMoveRight || canMoveUp && canMoveDown) return true;
 		return false;
 	}
 

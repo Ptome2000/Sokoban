@@ -84,6 +84,7 @@ public class Status {
 			game.getGUI().setErrorMessage("There should only be 2 teleports!");
 			throw new IllegalStateException("There should only be 2 teleports!");
 		}
+		setTeleports();
 	}
 	
 	//Validate if boxes have valid moves
