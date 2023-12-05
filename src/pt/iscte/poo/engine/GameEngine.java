@@ -2,6 +2,7 @@ package pt.iscte.poo.engine;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import pt.iscte.poo.elements.*;
 import pt.iscte.poo.gui.*;
 import pt.iscte.poo.observer.*;
@@ -17,11 +18,10 @@ public class GameEngine implements Observer {
 	private Empilhadora bobcat;	
 	private static GameEngine INSTANCE;
 	private List<ImageTile> tileList;
-	private String playerName;
 
 	private Status statusManager;
 	private Level levelManager;
-	private HighScores scores;
+	private HighScores scoresManager;
 
 	private GameEngine() {
 		tileList = new ArrayList<>();   
@@ -42,7 +42,7 @@ public class GameEngine implements Observer {
 	}
 
 	public HighScores getScores() {
-		return scores;
+		return scoresManager;
 	}
 
 	public List<ImageTile> getImages() {
@@ -68,9 +68,8 @@ public class GameEngine implements Observer {
 		gui.registerObserver(this);
 		gui.go();      
 
-		playerName = gui.askUser("Player's Name: ");
 		levelManager = new Level();
-		scores = new HighScores(playerName);
+		scoresManager = new HighScores(gui.askUser("Player's Name: "));
 
 		generateStatus();
 		levelManager.generateLevel();
@@ -81,8 +80,13 @@ public class GameEngine implements Observer {
 
 	//Updates Window Header with current level stats
 	public void updateStatus() {
-		String header = statusManager.toString() + " - Energy: " + bobcat.getEnergy();
-		gui.setStatusMessage(header);
+		try {
+			String header = statusManager.toString() + " - Energy: " + bobcat.getEnergy();
+			gui.setStatusMessage(header);
+		} catch (NullPointerException E) {
+			gui.setErrorMessage("Bobcat is missing!");
+			throw new NullPointerException("Bobcat is missing!");
+		}
 	}
 
 	//Generates the current level Status to be displayed on the Window Header
@@ -92,14 +96,12 @@ public class GameEngine implements Observer {
 
 	//Generates the Images on the Image Matrix
 	public void generateImages() {
-		gui.addImages(tileList);
-		gui.update();
+		gui.addImages(tileList); gui.update();
 	}
 
 	//Clears both the Image Interface and the Elements List
 	public void clearLevel() {
-		gui.clearImages();
-		tileList.clear();
+		gui.clearImages(); tileList.clear();
 	}
 
 	//Verifies if entered key is valid and proceeds to validate the movement from the bobcat class
@@ -132,24 +134,15 @@ public class GameEngine implements Observer {
 
 	//Compares the Elements's names in the given position, to the given Name
 	public boolean compObject(Point2D position, String Element) {
-		GameElement[] Elements = getGameElementAtPosition(position);
+		GameElement[] Elements = getGameElementsAtPosition(position);
 		for (GameElement g : Elements) {
-			if (g != null && g.getName().equals(Element)) return true;
+			if (g != null && g.getName() == Element) return true;
 		}
 		return false;
 	}
 
-	//returns specific object at given position 
-	public GameElement retunGameElementAtPosition(Point2D position, String Element) {
-		GameElement[] Elements = getGameElementAtPosition(position);
-		for (GameElement g : Elements) {
-			if (g != null && g.getName().equals(Element)) return g;
-		}
-		return null;
-	}
-	
 	//Retrieves all of the Elements from the given position and inserts them in order of their layer
-	public GameElement[] getGameElementAtPosition(Point2D newPosition) {
+	public GameElement[] getGameElementsAtPosition(Point2D newPosition) {
 		GameElement[] elemList = new GameElement[2]; //Size depending on the max layers
 		for (ImageTile tile : tileList) {
 			GameElement gE = (GameElement) tile;
@@ -158,37 +151,6 @@ public class GameEngine implements Observer {
 			}
 		}
 		return elemList;
-	}
-
-	//check if box has valid moves
-	
-	/***
-	 * Up: compObject(possiblePositions.get(3)
-	 * Down: compObject(possiblePositions.get(4)
-	 * Left: compObject(possiblePositions.get(1)
-	 * Right: compObject(possiblePositions.get(6)
-	 */
-	public boolean hasMoves(Caixote caixote){
-		List<Point2D> possiblePositions = caixote.getPosition().getWideNeighbourhoodPoints();
-		if((compObject(possiblePositions.get(3), "Parede") ||
-				(compObject(possiblePositions.get(3),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(3),"Caixote")).getHasMoves() == false))
-				&&
-				((compObject(possiblePositions.get(1), "Parede")||
-						(compObject(possiblePositions.get(1),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(1),"Caixote")).getHasMoves() == false) ||
-						(compObject(possiblePositions.get(6), "Parede")  || 
-								(compObject(possiblePositions.get(6),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(6),"Caixote")).getHasMoves() == false))))){
-			return false;
-		}
-		if((compObject(possiblePositions.get(4), "Parede") ||
-				(compObject(possiblePositions.get(4),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(4),"Caixote")).getHasMoves() == false))
-				&&
-				((compObject(possiblePositions.get(1), "Parede")||
-						(compObject(possiblePositions.get(1),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(1),"Caixote")).getHasMoves() == false) ||
-						(compObject(possiblePositions.get(6), "Parede")  || 
-								(compObject(possiblePositions.get(6),"Caixote") &&  ((Caixote)retunGameElementAtPosition(possiblePositions.get(6),"Caixote")).getHasMoves() == false))))){
-			return false;
-		}
-		return true;	
 	}
 
 }

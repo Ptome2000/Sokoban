@@ -2,6 +2,7 @@ package pt.iscte.poo.engine;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import pt.iscte.poo.tileObjects.*;
 
 public class Status {
@@ -10,7 +11,7 @@ public class Status {
 	private int level;
 	private GameEngine game = GameEngine.getInstance();
 
-	//Importart Elements that require validation
+	//Important Elements that require validation
 	private List<Alvo> targets;
 	private List<Teleporte> teleports;
 	private List<Caixote> crates;
@@ -41,7 +42,11 @@ public class Status {
 
 	public void addTeleport(Teleporte portal) {
 		teleports.add(portal);
-		if (teleports.size() > 1) validateTeleports();
+	}
+	
+	public void setTeleports() {
+		teleports.get(0).setDestination(teleports.get(1));
+		teleports.get(1).setDestination(teleports.get(0));
 	}
 
 	public void addMove() {
@@ -52,8 +57,10 @@ public class Status {
 	private void isGameOver() {
 		if (game.getBobcat() == null || game.getBobcat().getEnergy() == 0 
 				|| targets.size() > crates.size() || validateBoxMoves() == false ) {
-			game.getGUI().setMessage("GAME OVER");
-			game.getLevel().constructLevel();
+			game.getGUI().setWarningMessage("Game Over!");
+			if (game.getGUI().askUserYesNo("Restart Level?") == 0) {
+				game.getLevel().constructLevel();
+			} else System.exit(0);
 		}
 	}
 
@@ -73,31 +80,25 @@ public class Status {
 
 	//Validation of number of Teleports and setting of their destinations
 	public void validateTeleports() {
-		if (teleports.size() != 2) {
-			System.out.println("teleport size "+ teleports.size());
+		if (teleports.size() != 2 && teleports.size() != 0) {
+			game.getGUI().setErrorMessage("There should only be 2 teleports!");
 			throw new IllegalStateException("There should only be 2 teleports!");
 		}
-		teleports.get(0).setDestination(teleports.get(1));
-		teleports.get(1).setDestination(teleports.get(0));
-
 	}
+	
+	//Validate if boxes have valid moves
+		public boolean validateBoxMoves() {
+			for (Caixote caixote : crates) {
+				boolean valid = caixote.hasMovesOptimized();
+				caixote.setHasMoves(valid);
+				if(valid) return true;
+			}
+			return false;
+		}
 
 	@Override
 	public String toString() {
 		return "Level: " + level + " - Player: " + game.getScores().getPlayer() + " - Moves: " + moves;
-	}
-
-	//validate if boxes have valid moves
-	public boolean validateBoxMoves() {
-
-		for(Caixote caixote : crates) {
-			boolean valid = game.hasMoves(caixote);
-			caixote.setHasMoves(valid);
-			if(valid) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }

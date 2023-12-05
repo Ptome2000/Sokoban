@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import pt.iscte.poo.elements.GameElement;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.tileObjects.Chao;
@@ -12,21 +14,24 @@ import pt.iscte.poo.utils.Point2D;
 
 public class Level extends FileManager{
 
-	private File[] levels;
+	private final File[] levels;
 	private int levelPointer;
 	private GameEngine game = GameEngine.getInstance();
 	private final String folder = super.getPath() + "/levels";
 
 	public Level() {
-		loadLevels();
+		this.levels = loadLevels();
 		this.levelPointer = 0;
 	}
 
-	//Ordenação na pasta importa?
-	private void loadLevels() {
-		if (!super.checkFolder(folder)) throw new IllegalStateException();
+	//Loads Levels into an Array of Files
+	private File[] loadLevels() {
+		if (!super.checkFolder(folder)) {
+			game.getGUI().setErrorMessage("Levels Folder not found!");
+			throw new IllegalStateException();
+		}
 		File dir = new File(folder);
-		this.levels = dir.listFiles();
+		return dir.listFiles();
 	}
 
 	public File[] getLevels() {
@@ -37,16 +42,19 @@ public class Level extends FileManager{
 		return levelPointer;
 	}
 
+	//Process to be done when a level is cleared (Scores calculated, and new Level Generated)
 	public void levelCleared() {
-		
-		if(this.levelPointer >= levels.length-1){
+		if (this.levelPointer >= levels.length - 1){ //Last Level Cleared?
 			game.getScores().calculateScores();
-			game.getGUI().setMessage("You Win!");
-			return;
-		}else if(this.levelPointer <levels.length){
+			game.getGUI().setMessage("All Levels completed! Congrats!");
+			if (game.getGUI().askUserYesNo("Restart Game?") == 0) {
+				this.levelPointer = 0; 
+				constructLevel();
+			} else System.exit(0); //Terminates the Game
+		} else if (this.levelPointer < levels.length){
 			game.getScores().calculateScores();
 			game.getGUI().setMessage("Level " + levelPointer + " cleared");
-			this.levelPointer++;
+			this.levelPointer++; 
 			constructLevel();
 		}
 	}
@@ -59,6 +67,7 @@ public class Level extends FileManager{
 		game.updateStatus();
 	}
 
+	//Generates Level based on a File
 	public void generateLevel() {
 		Scanner scan;
 		try {
@@ -76,10 +85,13 @@ public class Level extends FileManager{
 					}
 				}
 			}
+			game.getStatus().validateTeleports();
 			scan.close();
-		} catch (FileNotFoundException err) {
-			err.printStackTrace();
+		} catch (FileNotFoundException E1) {	E1.printStackTrace();
+		} catch (NullPointerException E2)  {	JOptionPane.showMessageDialog(null, "Item is missing!", "ERROR", JOptionPane.ERROR_MESSAGE);
+
 		}
+
 	}
 
 }

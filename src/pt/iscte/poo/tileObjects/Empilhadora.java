@@ -58,7 +58,7 @@ public class Empilhadora extends MovableElement {
 		Direction direction = Direction.directionFor(key);
 		this.setFacing(direction);
 		Point2D newPosition = game.getNextPoint(direction, this);
-		GameElement[] gE = game.getGameElementAtPosition(newPosition);
+		GameElement[] gE = game.getGameElementsAtPosition(newPosition);
 		if (!this.canMove(newPosition, gE)) {
 			return otherMovements(newPosition, gE, direction);
 		}
@@ -86,7 +86,7 @@ public class Empilhadora extends MovableElement {
 	private boolean pushObject(Direction direction, GameElement element) {
 		MovableElement object = (MovableElement) element;
 		Point2D newPosition = game.getNextPoint(direction, object);
-		GameElement[] gE = game.getGameElementAtPosition(newPosition);
+		GameElement[] gE = game.getGameElementsAtPosition(newPosition);
 		return object.canMove(newPosition, gE);
 	}
 

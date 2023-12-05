@@ -344,6 +344,24 @@ public class ImageMatrixGUI extends Observed {
     public void setMessage(String Message) {
 		JOptionPane.showMessageDialog(panel, Message);
     }
+    
+    
+    ///////////////////    Added as Extras    ////////////////////////
+    
+    public void setErrorMessage(String Message) {
+    	JOptionPane.showMessageDialog(panel, Message, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public void setWarningMessage(String Message) {
+    	JOptionPane.showMessageDialog(panel, Message, "ATTENTION", JOptionPane.WARNING_MESSAGE);
+    }
+    
+    public int askUserYesNo(String question) { // Added 25-out-2022
+    	return JOptionPane.showConfirmDialog(panel, question, null, JOptionPane.YES_NO_OPTION);
+    }
+    
+    ///////////////////////////////////////////////////////////////////
+    
 
     @SuppressWarnings("serial") // Added 2-Mar-2016
     private class DisplayWindow extends JPanel {
@@ -450,5 +468,6 @@ public class ImageMatrixGUI extends Observed {
     public String askUser(String question) { // Added 25-out-2022
     	return JOptionPane.showInputDialog(question);
     }
+  
     
 }

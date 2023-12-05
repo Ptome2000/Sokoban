@@ -52,7 +52,7 @@ public abstract class GameElement implements ImageTile{
 		case '%': return new ParedeRachada(point, "ParedeRachada");
 		case 'T': Teleporte t = new Teleporte(point, "Teleporte"); game.getStatus().addTeleport(t); return t;
 
-		default: throw new IllegalArgumentException("Unknown symbol: " + sym);
+		default: return null;
 		}
 	}
 }

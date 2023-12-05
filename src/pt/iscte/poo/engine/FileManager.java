@@ -2,7 +2,6 @@ package pt.iscte.poo.engine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 public abstract class FileManager {
@@ -14,11 +13,13 @@ public abstract class FileManager {
 		return true;
 	}
 
+	//Checks if folder exists with the given name
 	public boolean checkFolder(String folder) {
 		File dir = new File(folder);
 		return dir.exists();
 	}
 
+	//Creates a folder with the given name
 	public void createFolder(String folder) {
 		File dir = new File(folder);
 		dir.mkdirs();
@@ -28,6 +29,7 @@ public abstract class FileManager {
 		return path;
 	}
 	
+	//Generates a HighScore File
 	public void generateFile(File file) {
 		try {
 			PrintWriter writer = new PrintWriter(file);
@@ -36,7 +38,7 @@ public abstract class FileManager {
 			}
 			writer.close();
 		} 
-		catch (FileNotFoundException e) {
+		catch (FileNotFoundException err) {
 			System.err.println("Problem writing in file " + file);
 		}
 	}

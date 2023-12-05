@@ -1,15 +1,16 @@
 package pt.iscte.poo.elements;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.iscte.poo.engine.ElementCategory;
 import pt.iscte.poo.engine.GameEngine;
-import pt.iscte.poo.tileObjects.*;
 import pt.iscte.poo.utils.Point2D;
 
 public class MovableElement extends GameElement implements Movable{
- 
-	
+
+	private GameEngine game = GameEngine.getInstance();
+
 	public MovableElement(Point2D position, String name) {
 		super(position, name);
 	}
@@ -39,9 +40,32 @@ public class MovableElement extends GameElement implements Movable{
 		return false;
 	}
 
+	//Check if box has valid moves by verifying the adjacent points
+	public boolean hasMovesOptimized() {
+		List<Point2D> possiblePositions = this.getPosition().getNeighbourhoodPoints();
+		List<Boolean> PossibleMoves = new ArrayList<>();
+
+		//If the position has an Obstacle, add the opposite result to the List (hasObstacle TRUE -> PossibleMove FALSE)
+		PossibleMoves.add(!hasObstacle(possiblePositions.get(0)));	//LEFT
+		PossibleMoves.add(!hasObstacle(possiblePositions.get(1)));	//UP
+		PossibleMoves.add(!hasObstacle(possiblePositions.get(2)));	//RIGHT
+		PossibleMoves.add(!hasObstacle(possiblePositions.get(3)));	//DOWN
+
+		PossibleMoves.removeIf(m -> !m); //Removes the moves that are not possible
+		if (PossibleMoves.size() > 2) return true;
+		return false;
+	}
+
+	//Verifies if there is an obstacle in the given Position
+	private boolean hasObstacle(Point2D position) {
+		GameElement[] element = game.getGameElementsAtPosition(position);
+		if (element[1] != null && element[1] != game.getBobcat()) return true;
+		return false;
+	}
+
 	@Override
 	public int getLayer() {
 		return 1;
 	}
-	
+
 }
