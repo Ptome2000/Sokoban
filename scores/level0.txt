@@ -1,8 +1,1 @@
-<<<<<<< HEAD
-Xanax;103
-p;62
-Pedro;-73
-=======
-Player2;0
-M;-74
->>>>>>> 67dc52b (file validation)
+

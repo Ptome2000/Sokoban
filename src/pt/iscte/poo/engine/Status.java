@@ -42,6 +42,8 @@ public class Status {
 
 	public void addTeleport(Teleporte portal) {
 		teleports.add(portal);
+		if(teleports.size()==2)
+			setTeleports();
 	}
 	
 	public void setTeleports() {
