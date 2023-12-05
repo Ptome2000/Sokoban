@@ -55,10 +55,11 @@ public class MovableElement extends GameElement implements Movable{
 		List<Boolean> PossibleMoves = new ArrayList<>();
 		PossibleMoves.removeIf(m -> !m); 
 		**/
-		
+		//if (canMoveLeft && canMoveRight || canMoveUp && canMoveDown) return true;
 		//Can only move Horizontally or Vertically
-		if (canMoveLeft && canMoveRight || canMoveUp && canMoveDown) return true;
-		return false;
+		if((!canMoveUp  && (!canMoveLeft ||!canMoveRight))||(!canMoveDown && (!canMoveLeft || !canMoveRight)))
+			return false;
+		return true;
 	}
 
 	//Verifies if there is an obstacle in the given Position
