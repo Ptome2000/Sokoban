@@ -81,10 +81,14 @@ public class Status {
 	}
 
 	//Validation of number of Teleports and setting of their destinations
-	public void validateTeleports() {
+	public void validateLevel() {
 		if (teleports.size() != 2 && teleports.size() != 0) {
 			game.getGUI().setErrorMessage("There should only be 2 teleports!");
 			throw new IllegalStateException("There should only be 2 teleports!");
+		}
+		if (targets.size() > crates.size()) {
+			game.getGUI().setErrorMessage("Level does not have enough Targets");
+			throw new IllegalStateException("Level does not have enough Targets");
 		}
 	}
 	

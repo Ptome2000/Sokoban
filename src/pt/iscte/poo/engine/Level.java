@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.JOptionPane;
-
 import pt.iscte.poo.elements.GameElement;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.tileObjects.Chao;
@@ -21,7 +19,7 @@ public class Level extends FileManager{
 
 	public Level() {
 		this.levels = loadLevels();
-		this.levelPointer = 6;
+		this.levelPointer = 0;
 	}
 
 	//Loads Levels into an Array of Files
@@ -85,11 +83,14 @@ public class Level extends FileManager{
 					}
 				}
 			}
-			game.getStatus().validateTeleports();
+			game.getStatus().validateLevel();
 			scan.close();
-		} catch (FileNotFoundException E1) {	E1.printStackTrace();
-		} catch (NullPointerException E2)  {	JOptionPane.showMessageDialog(null, "Item is missing!", "ERROR", JOptionPane.ERROR_MESSAGE);
-
+		} catch (FileNotFoundException E1) {
+			game.getGUI().setErrorMessage("Level " + levelPointer + " not found!");
+			E1.printStackTrace();
+		} catch (NullPointerException E2)  {	game.getGUI().setErrorMessage("Item is missing!");
+			if (game.getGUI().askUserYesNo("Do you want to skip to the next level?") == 0) {	levelPointer++; constructLevel(); return; }
+			System.exit(1);
 		}
 
 	}
