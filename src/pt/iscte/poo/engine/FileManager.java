@@ -1,8 +1,6 @@
 package pt.iscte.poo.engine;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 
 public abstract class FileManager {
 
@@ -29,17 +27,5 @@ public abstract class FileManager {
 		return path;
 	}
 	
-	//Generates a HighScore File
-	public void generateFile(File file) {
-		try {
-			PrintWriter writer = new PrintWriter(file);
-			for (int i = 1; i <= 3; i++) {
-				writer.println("Player" + i + ";" + "000");
-			}
-			writer.close();
-		} 
-		catch (FileNotFoundException err) {
-			System.err.println("Problem writing in file " + file);
-		}
-	}
+	
 }
