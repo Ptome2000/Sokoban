@@ -10,7 +10,7 @@ import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
-public class HighScores extends FileManager{
+public class HighScores extends FileManager {
 
 	private final String folder = super.getPath() + "/scores";
 	private final String playerName;
@@ -68,7 +68,7 @@ public class HighScores extends FileManager{
 			System.err.println("Score values with incorrect format found");
 			return null;
 		}
-		int newScore = game.getBobcat().getEnergy() - game.getStatus().getMoves();
+		int newScore = 500 - game.getStatus().getMoves();
 		if (scoreMap.get(playerName) == null) scoreMap.put(playerName, newScore); //Player does not exist
 		else if (scoreMap.get(playerName) != null && newScore > scoreMap.get(playerName)) scoreMap.put(playerName, newScore); //Player Exists
 		return scoreMap;
