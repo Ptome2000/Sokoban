@@ -71,13 +71,11 @@ public class Empilhadora extends MovableElement {
 			this.move(newPosition);
 			return true;
 		}
-		else if (ElementCategory.PUSHABLE_SLOT.contains(gE)) {
-			if (pushObject(direction, gE[1])) {
-				this.move(newPosition); this.decreaseEnergy();
-				WalkableElement floor = (WalkableElement) gE[0];
-				floor.action(this);
-				return true;
-			}
+		else if (ElementCategory.PUSHABLE_SLOT.contains(gE) && pushObject(direction, gE[1])) {
+			this.move(newPosition); this.decreaseEnergy();
+			WalkableElement floor = (WalkableElement) gE[0];
+			floor.action(this);
+			return true;
 		}
 		return false;
 	}

@@ -1,6 +1,5 @@
 package pt.iscte.poo.elements;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import pt.iscte.poo.engine.ElementCategory;

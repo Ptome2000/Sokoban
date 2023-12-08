@@ -24,7 +24,7 @@ public enum ElementCategory {
 			WalkableElement walkableElement = (WalkableElement) element[0];
 			return walkableElement.isWalkable();
 		}
-		if (elements[0].getClass().isInstance(element[0]) && elements[1].getClass().isInstance(element[1])) return true;
+		if (elements[1].getClass().isInstance(element[1])) return true;
 		return false;
 	}
 

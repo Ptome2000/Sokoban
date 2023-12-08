@@ -20,7 +20,7 @@ public class Buraco extends WalkableElement {
 			Palete palete = (Palete) element;
 			game.addElement(palete.transformPalete());
 		}
-		else if (verifyTarget(GameEngine.getInstance().getBobcat().getName())) game.setBobcat(null);
+		else if (verifyTarget(game.getBobcat().getName())) game.setBobcat(null);
 		else game.getStatus().removeBox((Caixote) element);
 
 		//When called, the element provided will be removed from the Game
